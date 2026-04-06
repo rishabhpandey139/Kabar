@@ -14,6 +14,7 @@ fun Article.toDomain(): NewsArticle {
         imageUrl = urlToImage ?: "https://via.placeholder.com/300",
         source = source?.name ?:"Unknown Source",
         date = publishedAt?: "",
-        link = url ?: ""
+        link = url ?: "",
+        content= content ?: ""
     )
 }

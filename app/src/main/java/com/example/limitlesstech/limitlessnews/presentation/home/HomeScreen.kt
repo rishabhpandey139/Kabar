@@ -1,7 +1,13 @@
+
 package com.example.limitlesstech.limitlessnews.presentation.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -12,17 +18,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-
+import androidx.navigation.NavController
 import com.example.limitlesstech.limitlessnews.core.util.Result
-import com.example.limitlesstech.limitlessnews.presentation.home.components.*
+
+import com.example.limitlesstech.limitlessnews.presentation.home.components.BottomBar
+import com.example.limitlesstech.limitlessnews.presentation.home.components.HeaderSection
+import com.example.limitlesstech.limitlessnews.presentation.home.components.NewsItem
+import com.example.limitlesstech.limitlessnews.presentation.home.components.SearchBar
+import com.example.limitlesstech.limitlessnews.presentation.home.components.SectionTitle
+import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
+import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
     viewModel: NewsViewModel = hiltViewModel()
 ) {
-
     LaunchedEffect(Unit) {
         viewModel.fetchNews("us", "technology")
     }
@@ -31,16 +43,16 @@ fun HomeScreen(
 
     Scaffold(
         bottomBar = { BottomBar() },
-        contentWindowInsets = WindowInsets(0) // 🔥 full control//remove system padding statusbar and navigation bars
+        // remove system insets, we handle status bar manually
+        contentWindowInsets = WindowInsets(0)
     ) { padding ->
 
         when (state) {
 
             is Result.Loading -> {
                 Box(
-
-                    modifier = Modifier.fillMaxSize()
-                        .background(color = Color.Red), // 🔥 background for loading state
+                    modifier = Modifier
+                        .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -53,15 +65,15 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .statusBarsPadding() // 🔥 only top safe
+                        .statusBarsPadding()
                         .padding(padding)
                 ) {
-
                     HeaderSection()
                     SearchBar()
 
                     LazyColumn(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                     ) {
                         item { SectionTitle("Trending") }
 
@@ -74,17 +86,31 @@ fun HomeScreen(
                         item { SectionTitle("Latest") }
 
                         items(articles) { article ->
-                            NewsItem(article)
+                            NewsItem(
+                                article = article,
+                                onClick = {
+                                    navController.navigate(Routes.Details(article.id))
+                                }
+                            )
                         }
                     }
                 }
             }
 
             is Result.Failure -> {
-                Text(text = "Something went wrong")
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Something went wrong")
+                }
             }
 
-            else -> {}
+            else -> {
+                // idle or unknown state; render nothing
+            }
         }
     }
 }

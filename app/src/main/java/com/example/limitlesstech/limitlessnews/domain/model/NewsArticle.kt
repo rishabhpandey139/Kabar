@@ -1,8 +1,11 @@
 package com.example.limitlesstech.limitlessnews.domain.model
 
-import java.io.Serializable
+
+import kotlinx.serialization.Serializable
 
 
+
+@Serializable
 data class NewsArticle(
     val id: String,
     val title: String,
@@ -10,8 +13,9 @@ data class NewsArticle(
     val imageUrl: String,
     val source: String,
     val date: String,
-    val link: String
+    val link: String,
+    val content:String
 
-): Serializable
+)
 
 //This is what your app actually uses

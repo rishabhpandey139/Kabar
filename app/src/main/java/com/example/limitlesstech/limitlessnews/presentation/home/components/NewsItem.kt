@@ -1,5 +1,7 @@
+
 package com.example.limitlesstech.limitlessnews.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,14 +21,16 @@ import coil3.compose.AsyncImage
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 
 @Composable
-fun NewsItem(article: NewsArticle) {
-
+fun NewsItem(
+    article: NewsArticle,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(12.dp)
     ) {
-
         AsyncImage(
             model = article.imageUrl,
             contentDescription = null,
@@ -39,8 +43,8 @@ fun NewsItem(article: NewsArticle) {
         Spacer(Modifier.width(12.dp))
 
         Column {
-            Text(article.title, maxLines = 2)
-            Text(article.source, color = Color.Gray)
+            Text(text = article.title, maxLines = 2)
+            Text(text = article.source, color = Color.Gray)
         }
     }
 }
