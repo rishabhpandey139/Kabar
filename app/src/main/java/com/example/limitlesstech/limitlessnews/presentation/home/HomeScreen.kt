@@ -1,115 +1,97 @@
-
 package com.example.limitlesstech.limitlessnews.presentation.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.limitlesstech.limitlessnews.core.util.Result
-
-import com.example.limitlesstech.limitlessnews.presentation.home.components.BottomBar
-import com.example.limitlesstech.limitlessnews.presentation.home.components.HeaderSection
-import com.example.limitlesstech.limitlessnews.presentation.home.components.NewsItem
-import com.example.limitlesstech.limitlessnews.presentation.home.components.SearchBar
-import com.example.limitlesstech.limitlessnews.presentation.home.components.SectionTitle
-import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
+import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
+import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
+import com.example.limitlesstech.limitlessnews.presentation.home.components.*
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    viewModel: NewsViewModel = hiltViewModel()
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
+
+    // 🔥 GET FILTER DATA
+    val parentEntry = remember(navController) {
+        navController.getBackStackEntry(Routes.UserSelection)
+    }
+    val selectionVm: SelectionViewModel = hiltViewModel(parentEntry)
+    val selectionState by selectionVm.uiState.collectAsState()
+
+    val state by homeViewModel.uiState.collectAsState()
+
+    // 🔥 AUTO LOAD NEWS
     LaunchedEffect(Unit) {
-        viewModel.fetchNews("us", "technology")
+        homeViewModel.loadNews(
+            NewsFilter(
+                country = selectionState.country,
+                category = selectionState.topic,
+                sources = selectionState.sources
+            )
+        )
     }
 
-    val state = viewModel.state
-
     Scaffold(
-        bottomBar = { BottomBar() },
-        // remove system insets, we handle status bar manually
-        contentWindowInsets = WindowInsets(0)
+        bottomBar = { BottomBar() }
     ) { padding ->
 
-        when (state) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
 
-            is Result.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            item { HeaderSection() }
+
+            item { Spacer(Modifier.height(8.dp)) }
+
+            item { SearchBar() }
+
+            item { SectionTitle("Latest") }
+
+            when (val result = state.news) {
+
+                is Result.Loading -> {
+                    item { CircularProgressIndicator() }
                 }
-            }
 
-            is Result.Success -> {
-                val articles = state.data
+                is Result.Failure -> {
+                    item { Text(result.message) }
+                }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                        .padding(padding)
-                ) {
-                    HeaderSection()
-                    SearchBar()
+                is Result.Success -> {
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        item { SectionTitle("Trending") }
-
-                        item {
-                            articles.firstOrNull()?.let {
-                                TrendingCard(it)
-                            }
-                        }
-
-                        item { SectionTitle("Latest") }
-
-                        items(articles) { article ->
-                            NewsItem(
-                                article = article,
-                                onClick = {
-                                    navController.navigate(Routes.Details(article.id))
-                                }
-                            )
+                    // 🔥 TRENDING (FIRST ITEM)
+                    item {
+                        result.data.firstOrNull()?.let {
+                            TrendingCard(it)
                         }
                     }
-                }
-            }
 
-            is Result.Failure -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Something went wrong")
+                    // 🔥 LIST
+                    items(result.data) { article ->
+                        NewsItem(
+                            article = article,
+                            onClick = {
+                                navController.navigate(
+                                    Routes.Details(article.id)
+                                )
+                            }
+                        )
+                    }
                 }
-            }
 
-            else -> {
-                // idle or unknown state; render nothing
+                else -> Unit
             }
         }
     }

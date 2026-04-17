@@ -1,38 +1,34 @@
+// app/src/main/java/com/example/limitlesstech/limitlessnews/presentation/detailScreen/DetailScreen.kt
 package com.example.limitlesstech.limitlessnews.presentation.detailScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import com.example.limitlesstech.limitlessnews.core.util.Result
-import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.BottomActions
-import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.DetailContent
-import com.example.limitlesstech.limitlessnews.presentation.home.NewsViewModel
+import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.DetailTopBar
+import com.example.limitlesstech.limitlessnews.presentation.home.HomeViewModel
 
 @Composable
 fun DetailScreen(
     articleId: String,
-    viewModel: NewsViewModel
+    viewModel: HomeViewModel,
+    navController: NavHostController
 ) {
-
-    val state = viewModel.state
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { DetailTopBar() },
-
-        bottomBar = { BottomActions() },
-
-
+        topBar = { DetailTopBar(onBack = { navController.popBackStack() }) }
     ) { padding ->
-
-        when (state) {
-
+        when (val news = uiState.news) {
             is Result.Loading -> {
                 Box(
                     modifier = Modifier
@@ -45,24 +41,22 @@ fun DetailScreen(
             }
 
             is Result.Success -> {
-
-                val article = state.data.find { it.id == articleId }
-
+                val article = news.data.firstOrNull { it.id == articleId }
                 if (article == null) {
-                    Text("Article not found")
+                    Text(modifier = Modifier.padding(padding), text = "Article not found")
                 } else {
-                    DetailContent(
-                        article = article,
-                        modifier = Modifier.padding(padding)
+                    Text(
+                        modifier = Modifier.padding(padding),
+                        text = article.title
                     )
                 }
             }
 
             is Result.Failure -> {
-                Text("Error loading data")
+                Text(modifier = Modifier.padding(padding), text = news.message)
             }
 
-            else -> {}
+            else -> Unit
         }
     }
 }
