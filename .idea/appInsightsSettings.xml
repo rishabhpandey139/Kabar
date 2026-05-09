@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.limitlesstech.limitlessnews" />
+                  <option name="mobileSdkAppId" value="1:194943357313:android:f69480b7c2274497b6d880" />
+                  <option name="projectId" value="newsapp-9dcd4" />
+                  <option name="projectNumber" value="194943357313" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

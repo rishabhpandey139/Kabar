@@ -1,5 +1,6 @@
 package com.example.limitlesstech.limitlessnews.presentation.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,19 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.limitlesstech.limitlessnews.core.util.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
 import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
 import com.example.limitlesstech.limitlessnews.presentation.home.components.*
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-    // 🔥 GET FILTER DATA
     val parentEntry = remember(navController) {
         navController.getBackStackEntry(Routes.UserSelection)
     }
@@ -30,7 +30,7 @@ fun HomeScreen(
 
     val state by homeViewModel.uiState.collectAsState()
 
-    // 🔥 AUTO LOAD NEWS
+    // 🔥 Load news
     LaunchedEffect(Unit) {
         homeViewModel.loadNews(
             NewsFilter(
@@ -52,46 +52,51 @@ fun HomeScreen(
         ) {
 
             item { HeaderSection() }
-
             item { Spacer(Modifier.height(8.dp)) }
-
             item { SearchBar() }
-
             item { SectionTitle("Latest") }
 
-            when (val result = state.news) {
+            // 🔥 LOADING
+            if (state.isLoading) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
 
-                is Result.Loading -> {
-                    item { CircularProgressIndicator() }
+            // 🔥 ERROR
+            state.error?.let {
+                item {
+                    Text(
+                        text = it.toString(),
+                        modifier = Modifier.padding(16.dp),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+
+            // 🔥 DATA
+            if (state.news.isNotEmpty()) {
+
+                // Trending (first item)
+                item {
+                    state.news.firstOrNull()?.let {
+                        TrendingCard(it)
+                    }
                 }
 
-                is Result.Failure -> {
-                    item { Text(result.message) }
-                }
-
-                is Result.Success -> {
-
-                    // 🔥 TRENDING (FIRST ITEM)
-                    item {
-                        result.data.firstOrNull()?.let {
-                            TrendingCard(it)
+                // List
+                items(state.news) { article ->
+                    NewsItem(
+                        article = article,
+                        onClick = {
+                            navController.navigate(
+                                Routes.Details(article.id)
+                            )
                         }
-                    }
-
-                    // 🔥 LIST
-                    items(result.data) { article ->
-                        NewsItem(
-                            article = article,
-                            onClick = {
-                                navController.navigate(
-                                    Routes.Details(article.id)
-                                )
-                            }
-                        )
-                    }
+                    )
                 }
-
-                else -> Unit
             }
         }
     }

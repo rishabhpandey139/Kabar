@@ -1,6 +1,6 @@
 package com.example.limitlesstech.limitlessnews.domain.usecase
 
-import com.example.limitlesstech.limitlessnews.core.util.Result
+import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository

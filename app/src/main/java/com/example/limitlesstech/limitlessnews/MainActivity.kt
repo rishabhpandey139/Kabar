@@ -25,7 +25,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    // Keep or remove; not used by navigation.
-}

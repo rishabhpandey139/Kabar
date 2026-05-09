@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194943357313",
+    "project_id": "newsapp-9dcd4",
+    "storage_bucket": "newsapp-9dcd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194943357313:android:f69480b7c2274497b6d880",
+        "android_client_info": {
+          "package_name": "com.example.limitlesstech.limitlessnews"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAojhTcE9iyMc0-eD17EyQGg_qL0cJs1Sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

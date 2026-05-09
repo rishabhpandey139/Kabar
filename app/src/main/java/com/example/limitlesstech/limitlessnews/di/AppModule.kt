@@ -1,27 +1,36 @@
-
 package com.example.limitlesstech.limitlessnews.di
-import com.example.limitlesstech.limitlessnews.core.network.NewsApi
-import javax.inject.Singleton
 
+// Hilt
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+// Ktor
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
-
-import kotlinx.serialization.json.Json
-
-import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
-import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
-import com.example.limitlesstech.limitlessnews.domain.usecase.GetNewsUseCase
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.*
 import io.ktor.http.URLProtocol
+import io.ktor.serialization.kotlinx.json.json
+
+// Kotlinx Serialization
+import kotlinx.serialization.json.Json
+
+// Project imports
+import com.example.limitlesstech.limitlessnews.core.network.NewsApi
+import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseAuthRepository
+import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
+import com.example.limitlesstech.limitlessnews.domain.repository.AuthRepository
+import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
+import com.example.limitlesstech.limitlessnews.domain.usecase.GetNewsUseCase
+import com.google.firebase.auth.FirebaseAuth
 import io.ktor.http.encodedPath
+
+// Javax
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,24 +40,27 @@ object AppModule {
     @Singleton
     fun provideHttpClient(): HttpClient {
         return HttpClient(CIO) {
+
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                })
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                        coerceInputValues = true
+                    }
+                )
             }
+
             install(HttpTimeout) {
-                requestTimeoutMillis = 25000 // 25 seconds
-                connectTimeoutMillis = 25000 //
-                socketTimeoutMillis = 25000
+                requestTimeoutMillis = 25_000
+                connectTimeoutMillis = 25_000
+                socketTimeoutMillis = 25_000
             }
+
             defaultRequest {
                 url {
                     protocol = URLProtocol.HTTPS
-                    host = "newsapi.org"//only domain name
-                    encodedPath = "/v2/"//base path
-
-
+                    host = "newsapi.org"
+                    encodedPath = "/v2/"
                 }
             }
         }
@@ -70,6 +82,21 @@ object AppModule {
     @Singleton
     fun provideGetNewsUseCase(repository: NewsRepository): GetNewsUseCase {
         return GetNewsUseCase(repository)
-
     }
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        firebaseAuth: FirebaseAuth
+    ): AuthRepository {
+        return FirebaseAuthRepository(firebaseAuth)
+    }
+
+
 }

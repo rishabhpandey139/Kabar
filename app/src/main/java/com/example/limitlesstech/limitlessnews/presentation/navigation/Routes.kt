@@ -6,6 +6,14 @@ import kotlinx.serialization.Serializable
 sealed class Routes {
 
     @Serializable
+    data object SignUp : Routes()
+    @Serializable
+    data object Login : Routes()
+
+    @Serializable
+    data object Forgot : Routes()
+
+    @Serializable
     data object UserSelection : Routes()
 
     @Serializable
