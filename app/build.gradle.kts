@@ -80,5 +80,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     //coil
-    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    //Datastore Preferences
+    implementation( "androidx.datastore:datastore-preferences:1.1.7")
 }

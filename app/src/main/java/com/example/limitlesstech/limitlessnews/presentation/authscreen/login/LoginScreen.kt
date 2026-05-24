@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +32,7 @@ import com.example.limitlesstech.limitlessnews.presentation.authscreen.login.com
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.login.components.SocialButtons
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -48,16 +51,37 @@ fun LoginScreen(
 
         if (state.isSuccess) {
 
-            snackbarHostState.showSnackbar(
-                "Login Successful"
-            )
+            launch {
 
-            delay(1000)
+                snackbarHostState.showSnackbar(
+                    message = "Login Successful",
+                    duration = SnackbarDuration.Short
+                )
+            }
 
-            navController.navigate(Routes.UserSelection) {
+            delay(2000)
 
-                popUpTo(Routes.Login) {
-                    inclusive = true
+            // 🔥 Remember me checked
+            if (state.rememberMe) {
+
+                navController.navigate(
+                    Routes.UserSelection
+                ) {
+
+                    popUpTo(Routes.Login) {
+                        inclusive = true
+                    }
+                }
+
+            } else {
+
+                navController.navigate(
+                    Routes.UserSelection
+                ) {
+
+                    popUpTo(Routes.Login) {
+                        inclusive = true
+                    }
                 }
             }
         }
@@ -76,8 +100,11 @@ fun LoginScreen(
                 is DomainError.Network ->
                     "Check internet connection"
 
-                is DomainError.PasswordMissingDigit -> "Add 1 number"
-                is DomainError.PasswordMissingUpper -> "Add 1 uppercase letter"
+                is DomainError.PasswordMissingDigit ->
+                    "Add 1 number"
+
+                is DomainError.PasswordMissingUpper ->
+                    "Add 1 uppercase letter"
 
                 else ->
                     "Something went wrong"
@@ -85,15 +112,17 @@ fun LoginScreen(
 
             snackbarHostState.showSnackbar(message)
 
-            // 🔥 reset error
+            // 🔥 Reset error
             viewModel.clearError()
         }
     }
 
     Scaffold(
+
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         }
+
     ) { padding ->
 
         Column(
@@ -102,7 +131,8 @@ fun LoginScreen(
                 .padding(padding)
                 .padding(20.dp),
 
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement =
+                Arrangement.spacedBy(16.dp)
         ) {
 
             LoginHeader()
@@ -110,31 +140,45 @@ fun LoginScreen(
             // 🔥 Email field
             LoginTextField(
                 label = "Username",
+
                 value = state.username,
-                onValueChange = viewModel::onUsernameChange,
+
+                onValueChange =
+                    viewModel::onUsernameChange,
+
                 error = state.usernameError
             )
 
             // 🔥 Password field
             LoginTextField(
                 label = "Password",
+
                 value = state.password,
-                onValueChange = viewModel::onPasswordChange,
+
+                onValueChange =
+                    viewModel::onPasswordChange,
+
                 error = state.passwordError,
+
                 isPassword = true
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+
+                horizontalArrangement =
+                    Arrangement.SpaceBetween
             ) {
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment =
+                        Alignment.CenterVertically
                 ) {
 
                     Checkbox(
+
                         checked = state.rememberMe,
+
                         onCheckedChange = {
                             viewModel.toggleRemember()
                         }
@@ -145,21 +189,27 @@ fun LoginScreen(
 
                 Text(
                     text = "Forgot password?",
+
                     color = Color(0xFF2979FF),
 
                     modifier = Modifier.clickable {
-                        navController.navigate(Routes.Forgot)
+
+                        navController.navigate(
+                            Routes.Forgot
+                        )
                     }
                 )
             }
 
             // 🔥 Login button
             LoginButton(
+
                 onClick = {
                     viewModel.login()
                 },
 
                 enabled = state.isFormValid,
+
                 isLoading = state.isLoading
             )
 
@@ -176,10 +226,13 @@ fun LoginScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
 
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement =
+                    Arrangement.Center
             ) {
 
-                Text("Don't have an account? ")
+                Text(
+                    "Don't have an account? "
+                )
 
                 Text(
                     text = "Sign Up",
@@ -187,7 +240,10 @@ fun LoginScreen(
                     color = Color(0xFF2979FF),
 
                     modifier = Modifier.clickable {
-                        navController.navigate(Routes.SignUp)
+
+                        navController.navigate(
+                            Routes.SignUp
+                        )
                     }
                 )
             }

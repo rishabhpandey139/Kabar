@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil.compose.AsyncImage
 import com.example.limitlesstech.limitlessnews.core.util.formatDateTime
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 
@@ -18,7 +18,7 @@ fun HeaderSection(article: NewsArticle) {
     Row(verticalAlignment = Alignment.CenterVertically) {
 
         AsyncImage(
-            model = article.imageUrl,
+            model = article.imageUrl,//further improvement: use source logo instead of article image
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)

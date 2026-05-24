@@ -3,6 +3,7 @@ package com.example.limitlesstech.limitlessnews.presentation.authscreen.login
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
 import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,43 +15,60 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val dataStore: DataStoreManager
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(LoginUiState())
-    val state: StateFlow<LoginUiState> = _state
+    private val _state =
+        MutableStateFlow(LoginUiState())
+
+    val state: StateFlow<LoginUiState> =
+        _state
 
     // 🔥 Email change + validation
     fun onUsernameChange(value: String) {
-        _state.update {
+
+        _state.update { current ->
 
             val error = validateEmail(value)
 
-            it.copy(
+            current.copy(
                 username = value,
                 usernameError = error,
-                isFormValid = isFormValid(value, it.password)
+                isFormValid = isFormValid(
+                    value,
+                    current.password
+                )
             )
         }
     }
 
     // 🔥 Password change + validation
     fun onPasswordChange(value: String) {
-        _state.update {
+
+        _state.update { current ->
 
             val error = validatePassword(value)
 
-            it.copy(
+            current.copy(
                 password = value,
                 passwordError = error,
-                isFormValid = isFormValid(it.username, value)
+                isFormValid = isFormValid(
+                    current.username,
+                    value
+                )
             )
         }
     }
 
+    // 🔥 Remember me
     fun toggleRemember() {
-        _state.update {
-            it.copy(rememberMe = !it.rememberMe)
+
+        _state.update { current ->
+
+            current.copy(
+                rememberMe = !current.rememberMe
+            )
         }
     }
 
@@ -79,6 +97,13 @@ class LoginViewModel @Inject constructor(
             when (result) {
 
                 is Result.Success -> {
+
+                    // 🔥 Save login state
+                    if (current.rememberMe) {
+
+                        dataStore.saveLoginState(true)
+                    }
+
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -88,6 +113,7 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Result.Failure -> {
+
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -100,13 +126,19 @@ class LoginViewModel @Inject constructor(
     }
 
     // 🔥 Email validation
-    private fun validateEmail(email: String): String? {
+    private fun validateEmail(
+        email: String
+    ): String? {
 
         if (email.isBlank()) {
             return "Email required"
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (
+            !Patterns.EMAIL_ADDRESS
+                .matcher(email)
+                .matches()
+        ) {
             return "Invalid email"
         }
 
@@ -114,7 +146,9 @@ class LoginViewModel @Inject constructor(
     }
 
     // 🔥 Password validation
-    private fun validatePassword(password: String): String? {
+    private fun validatePassword(
+        password: String
+    ): String? {
 
         if (password.isBlank()) {
             return "Password required"
@@ -139,6 +173,7 @@ class LoginViewModel @Inject constructor(
 
     // 🔥 Clear snackbar error
     fun clearError() {
+
         _state.update {
             it.copy(error = null)
         }

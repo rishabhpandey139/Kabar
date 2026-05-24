@@ -16,95 +16,155 @@ import com.example.limitlesstech.limitlessnews.presentation.common.SelectionView
 import com.example.limitlesstech.limitlessnews.presentation.detailScreen.DetailScreen
 import com.example.limitlesstech.limitlessnews.presentation.home.HomeScreen
 import com.example.limitlesstech.limitlessnews.presentation.home.HomeViewModel
-
+import com.example.limitlesstech.limitlessnews.presentation.onboarding.OnboardingScreen
+import com.example.limitlesstech.limitlessnews.presentation.splash.SplashScreen
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.CountryScreen
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.SourceScreen
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.TopicScreen
 
-
-//NavGraph navigation handle karta hai aur shared ViewModel ka scope decide karne me help karta hai.
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
-fun AppNavGraph(navController: NavHostController) {
+fun AppNavGraph(
+    navController: NavHostController
+) {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.SignUp
+        startDestination = Routes.Splash
     ) {
-        // 🔥 SignUp SCREEN
-        composable<Routes.SignUp> {
-            SignupScreen(
+
+        // 🔥 Splash
+        composable<Routes.Splash> {
+
+            SplashScreen(
                 navController = navController
-
-
             )
         }
 
-        // 🔥 LOGIN SCREEN
+        // 🔥 Onboarding
+        composable<Routes.Onboarding> {
+
+            OnboardingScreen(
+                navController = navController
+            )
+        }
+
+        // 🔥 Signup
+        composable<Routes.SignUp> {
+
+            SignupScreen(
+                navController = navController
+            )
+        }
+
+        // 🔥 Login
         composable<Routes.Login> {
+
             LoginScreen(
                 navController = navController
             )
         }
-        // 🔥 forgot SCREEN
+
+        // 🔥 Forgot Password
         composable<Routes.Forgot> {
+
             ForgotScreen(
                 navController = navController
             )
         }
 
-
-
-        // 🔥 USER SELECTION FLOW
+        // 🔥 USER SELECTION GRAPH
         navigation<Routes.UserSelection>(
             startDestination = Routes.Country
         ) {
 
+            // 🔥 Country
             composable<Routes.Country> {
-                val parentEntry = remember{
-                    navController.getBackStackEntry(Routes.UserSelection)
+
+                val parentEntry = remember(navController) {
+
+                    navController.getBackStackEntry(
+                        Routes.UserSelection
+                    )
                 }
-                val vm: SelectionViewModel = hiltViewModel(parentEntry)
-                CountryScreen(navController, vm)
+
+                val vm: SelectionViewModel =
+                    hiltViewModel(parentEntry)
+
+                CountryScreen(
+                    navController = navController,
+                    viewModel = vm
+                )
             }
 
+            // 🔥 Topic
             composable<Routes.Topic> {
+
                 val parentEntry = remember(navController) {
-                    navController.getBackStackEntry(Routes.UserSelection)
+
+                    navController.getBackStackEntry(
+                        Routes.UserSelection
+                    )
                 }
-                val vm: SelectionViewModel = hiltViewModel(parentEntry)
-                TopicScreen(navController, vm)
+
+                val vm: SelectionViewModel =
+                    hiltViewModel(parentEntry)
+
+                TopicScreen(
+                    navController = navController,
+                    viewModel = vm
+                )
             }
 
+            // 🔥 Source
             composable<Routes.Source> {
+
                 val parentEntry = remember(navController) {
-                    navController.getBackStackEntry(Routes.UserSelection)
+
+                    navController.getBackStackEntry(
+                        Routes.UserSelection
+                    )
                 }
-                val vm: SelectionViewModel = hiltViewModel(parentEntry)
-                SourceScreen(navController, vm)
+
+                val vm: SelectionViewModel =
+                    hiltViewModel(parentEntry)
+
+                SourceScreen(
+                    navController = navController,
+                    viewModel = vm
+                )
             }
         }
 
-        // 🔥 HOME
+        // 🔥 Home
         composable<Routes.Home> {
 
-            HomeScreen(navController = navController)
+            HomeScreen(
+                navController = navController
+            )
         }
-        // 🔥 DETAILS
+
+        // 🔥 Details
         composable<Routes.Details> { backStackEntry ->
 
-            val args = backStackEntry.toRoute<Routes.Details>()
+            val args =
+                backStackEntry.toRoute<Routes.Details>()
 
-            val parentEntry = remember{
-                navController.getBackStackEntry(Routes.Home)
+            // 🔥 Shared HomeViewModel
+            val parentEntry = remember(navController) {
+
+                navController.getBackStackEntry(
+                    Routes.Home
+                )
             }
 
-            val sharedHomeVm: HomeViewModel = hiltViewModel(parentEntry)
+            val homeViewModel: HomeViewModel =
+                hiltViewModel(parentEntry)
 
             DetailScreen(
                 navController = navController,
                 articleId = args.articleId,
-                viewModel = sharedHomeVm
+                viewModel = homeViewModel
             )
         }
     }

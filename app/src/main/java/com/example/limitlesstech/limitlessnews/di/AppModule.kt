@@ -1,6 +1,7 @@
 package com.example.limitlesstech.limitlessnews.di
 
 // Hilt
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,12 +22,14 @@ import kotlinx.serialization.json.Json
 
 // Project imports
 import com.example.limitlesstech.limitlessnews.core.network.NewsApi
+import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseAuthRepository
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.AuthRepository
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
 import com.example.limitlesstech.limitlessnews.domain.usecase.GetNewsUseCase
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.http.encodedPath
 
 // Javax
@@ -98,5 +101,15 @@ object AppModule {
         return FirebaseAuthRepository(firebaseAuth)
     }
 
+    // 🔥 DataStore DI
+    // 🔥 DataStoreManager
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(
+        @ApplicationContext context: Context
+    ): DataStoreManager {
+
+        return DataStoreManager(context)
+    }
 
 }

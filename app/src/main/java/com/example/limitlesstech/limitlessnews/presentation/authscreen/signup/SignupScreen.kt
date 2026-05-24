@@ -1,6 +1,5 @@
 package com.example.limitlesstech.limitlessnews.presentation.authscreen.signup
 
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -27,47 +26,105 @@ fun SignupScreen(
 
     val state by viewModel.state.collectAsState()
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
+    var passwordVisible by remember {
+        mutableStateOf(false)
+    }
 
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    // 🔥 Navigation
+    // 🔥 Success navigation
     LaunchedEffect(state.isSuccess) {
+
         if (state.isSuccess) {
-            snackbarHostState.showSnackbar("Signup Successful")
-            delay(1000)
-            navController.navigate(Routes.Login) {
-                popUpTo(Routes.SignUp) { inclusive = true }
+
+            launch {
+
+                snackbarHostState.showSnackbar(
+                    message = "Signup Successful",
+                    duration = SnackbarDuration.Short
+                )
+            }
+
+            delay(2000)
+
+            // 🔥 Remember me checked
+            if (state.rememberMe) {
+
+                navController.navigate(
+                    Routes.Login
+                ) {
+
+                    popUpTo(Routes.SignUp) {
+                        inclusive = true
+                    }
+                }
+
+            } else {
+
+                navController.navigate(
+                    Routes.Login
+                ) {
+
+                    popUpTo(Routes.SignUp) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }
 
-    // 🔥 Show Snackbar on error
+    // 🔥 Error snackbar
     LaunchedEffect(state.error) {
+
         state.error?.let { error ->
+
             val message = when (error) {
-                is DomainError.EmptyEmail -> "Email required"
-                is DomainError.EmptyPassword -> "Password required"
-                is DomainError.InvalidEmailFormat -> "Invalid email"
-                is DomainError.PasswordTooShort -> "Password too short"
-                is DomainError.PasswordMissingUpper -> "Add 1 uppercase letter"
-                is DomainError.PasswordMissingDigit -> "Add 1 number"
+
+                is DomainError.EmptyEmail ->
+                    "Email required"
+
+                is DomainError.EmptyPassword ->
+                    "Password required"
+
+                is DomainError.InvalidEmailFormat ->
+                    "Invalid email"
+
+                is DomainError.PasswordTooShort ->
+                    "Password too short"
+
+                is DomainError.PasswordMissingUpper ->
+                    "Add 1 uppercase letter"
+
+                is DomainError.PasswordMissingDigit ->
+                    "Add 1 number"
+
                 is DomainError.UserAlreadyExists ->
                     "Email already in use"
 
-                is DomainError.Network-> "Check your connection"
-                else -> "Something went wrong"
+                is DomainError.Network ->
+                    "Check your connection"
+
+                else ->
+                    "Something went wrong"
             }
 
-            snackbarHostState.showSnackbar(message)
-            // 🔥 reset error
+            snackbarHostState.showSnackbar(
+                message
+            )
+
+            // 🔥 Reset error
             viewModel.clearError()
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
+
     ) { padding ->
 
         Column(
@@ -75,67 +132,127 @@ fun SignupScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                ),
+
+            verticalArrangement =
+                Arrangement.spacedBy(16.dp)
         ) {
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(
+                Modifier.height(10.dp)
+            )
 
             SignupHeader()
 
+            // 🔥 Email field
             SignupTextField(
+
                 label = "Enter Email-id",
+
                 value = state.username,
-                onValueChange = viewModel::onUsernameChange,
-                error=state.usernameError
+
+                onValueChange =
+                    viewModel::onUsernameChange,
+
+                error = state.usernameError
             )
 
+            // 🔥 Password field
             SignupTextField(
+
                 label = "Password",
+
                 value = state.password,
-                onValueChange = viewModel::onPasswordChange,
-                error=state.passwordError,
+
+                onValueChange =
+                    viewModel::onPasswordChange,
+
+                error = state.passwordError,
+
                 isPassword = true,
-                passwordVisible = passwordVisible,
-                onToggle = { passwordVisible = !passwordVisible }
+
+                passwordVisible =
+                    passwordVisible,
+
+                onToggle = {
+
+                    passwordVisible =
+                        !passwordVisible
+                }
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // 🔥 Remember me
+            Row(
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
                 Checkbox(
+
                     checked = state.rememberMe,
-                    onCheckedChange = { viewModel.toggleRemember() }
+
+                    onCheckedChange = {
+
+                        viewModel.toggleRemember()
+                    }
                 )
+
                 Text("Remember me")
             }
 
+            // 🔥 Signup button
             SignupButton(
-                onClick = { viewModel.signup() },
+
+                onClick = {
+                    viewModel.signup()
+                },
+
                 enabled = state.isFormValid,
+
                 isLoading = state.isLoading
             )
 
             Text(
                 "or continue with",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
             )
 
             SocialRow()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+
+                horizontalArrangement =
+                    Arrangement.Center
             ) {
-                Text("Already have an account ? ")
+
                 Text(
+                    "Already have an account ? "
+                )
+
+                Text(
+
                     text = "Login",
+
                     color = Color(0xFF2979FF),
+
                     modifier = Modifier.clickable {
-                        navController.navigate(Routes.Login)
+
+                        navController.navigate(
+                            Routes.Login
+                        )
                     }
                 )
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(
+                Modifier.height(20.dp)
+            )
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 
@@ -60,7 +61,3 @@ fun DetailContent(
     }
 }
 
-@Composable
-fun AsyncImage(model: String, contentDescription: Nothing?, modifier: Modifier) {
-    TODO("Not yet implemented")
-}

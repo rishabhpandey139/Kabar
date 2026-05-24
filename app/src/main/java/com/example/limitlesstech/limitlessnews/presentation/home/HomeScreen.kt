@@ -1,48 +1,39 @@
+// presentation/home/HomeScreen.kt
+
 package com.example.limitlesstech.limitlessnews.presentation.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
-import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
-import com.example.limitlesstech.limitlessnews.presentation.home.components.*
+import com.example.limitlesstech.limitlessnews.presentation.home.components.BottomBar
+import com.example.limitlesstech.limitlessnews.presentation.home.components.HeaderSection
+import com.example.limitlesstech.limitlessnews.presentation.home.components.NewsItem
+import com.example.limitlesstech.limitlessnews.presentation.home.components.SearchBar
+import com.example.limitlesstech.limitlessnews.presentation.home.components.SectionTitle
+import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
-@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-    val parentEntry = remember(navController) {
-        navController.getBackStackEntry(Routes.UserSelection)
-    }
-    val selectionVm: SelectionViewModel = hiltViewModel(parentEntry)
-    val selectionState by selectionVm.uiState.collectAsState()
-
     val state by homeViewModel.uiState.collectAsState()
 
-    // 🔥 Load news
-    LaunchedEffect(Unit) {
-        homeViewModel.loadNews(
-            NewsFilter(
-                country = selectionState.country,
-                category = selectionState.topic,
-                sources = selectionState.sources
-            )
-        )
-    }
-
     Scaffold(
-        bottomBar = { BottomBar() }
+        bottomBar = {
+            BottomBar()
+        }
     ) { padding ->
 
         LazyColumn(
@@ -51,46 +42,70 @@ fun HomeScreen(
                 .padding(padding)
         ) {
 
-            item { HeaderSection() }
-            item { Spacer(Modifier.height(8.dp)) }
-            item { SearchBar() }
-            item { SectionTitle("Latest") }
+            item {
+                HeaderSection()
+            }
 
-            // 🔥 LOADING
+            item {
+                Spacer(Modifier.height(8.dp))
+            }
+
+            item {
+                SearchBar()
+            }
+
+            item {
+                SectionTitle("Latest")
+            }
+
+            // 🔥 Loading
             if (state.isLoading) {
+
                 item {
+
                     CircularProgressIndicator(
                         modifier = Modifier.padding(16.dp)
                     )
                 }
             }
 
-            // 🔥 ERROR
-            state.error?.let {
+            // 🔥 Error
+            state.error?.let { error ->
+
                 item {
+
                     Text(
-                        text = it.toString(),
+                        text = error.toString(),
+
                         modifier = Modifier.padding(16.dp),
+
                         color = MaterialTheme.colorScheme.error
                     )
                 }
             }
 
-            // 🔥 DATA
+            // 🔥 News List
             if (state.news.isNotEmpty()) {
 
-                // Trending (first item)
+                // Trending
                 item {
-                    state.news.firstOrNull()?.let {
-                        TrendingCard(it)
+
+                    state.news.firstOrNull()?.let { article ->
+
+
+                        TrendingCard(article)
                     }
                 }
 
-                // List
+                // News Items
                 items(state.news) { article ->
+
                     NewsItem(
+
                         article = article,
+
                         onClick = {
+
                             navController.navigate(
                                 Routes.Details(article.id)
                             )
