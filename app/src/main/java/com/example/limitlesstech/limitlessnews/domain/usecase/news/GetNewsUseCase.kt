@@ -1,4 +1,4 @@
-package com.example.limitlesstech.limitlessnews.domain.usecase
+package com.example.limitlesstech.limitlessnews.domain.usecase.news
 
 import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle

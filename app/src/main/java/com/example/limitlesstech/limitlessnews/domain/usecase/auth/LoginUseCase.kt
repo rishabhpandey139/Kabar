@@ -1,4 +1,4 @@
-package com.example.limitlesstech.limitlessnews.domain.usecase
+package com.example.limitlesstech.limitlessnews.domain.usecase.auth
 
 import android.util.Patterns
 import com.example.limitlesstech.limitlessnews.domain.common.DomainError

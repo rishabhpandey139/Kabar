@@ -35,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
+import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.SelectionViewModel
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
 private data class UiSource(val id: String, val name: String)
@@ -83,7 +83,15 @@ fun SourceScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = { navController.navigate(Routes.Home) },
+                    onClick = { navController.navigate(Routes.Home) {
+                        popUpTo(Routes.UserSelection) {
+                            inclusive = true
+                        }
+
+                        launchSingleTop = true
+
+
+                    } },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)

@@ -2,7 +2,7 @@ package com.example.limitlesstech.limitlessnews.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

@@ -1,10 +1,9 @@
-// presentation/common/SelectionViewModel.kt
-
-package com.example.limitlesstech.limitlessnews.presentation.common
+package com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
+import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.SelectionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

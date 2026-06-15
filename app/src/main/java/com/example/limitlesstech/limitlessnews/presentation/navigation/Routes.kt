@@ -13,6 +13,7 @@ sealed class Routes {
 
     @Serializable
     data object SignUp : Routes()
+
     @Serializable
     data object Login : Routes()
 
@@ -31,9 +32,21 @@ sealed class Routes {
     @Serializable
     data object Source : Routes()
 
+    // NEW
+    @Serializable
+    data object MainGraph : Routes()
+
     @Serializable
     data object Home : Routes()
 
     @Serializable
-    data class Details(val articleId: String) : Routes()
+    data object Bookmark : Routes()
+
+    @Serializable
+    data object Profile : Routes()
+
+    @Serializable
+    data class Details(
+        val articleId: String
+    ) : Routes()
 }

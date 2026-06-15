@@ -1,5 +1,6 @@
 package com.example.limitlesstech.limitlessnews.data.repositoryImpl
 
+import android.util.Log
 import com.example.limitlesstech.limitlessnews.core.network.NewsApi
 import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.common.DomainError
@@ -7,7 +8,11 @@ import com.example.limitlesstech.limitlessnews.data.mapper.toDomain
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
+import io.ktor.util.network.UnresolvedAddressException
 import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor(
@@ -31,17 +36,31 @@ class NewsRepositoryImpl @Inject constructor(
 
             Result.Success(articles)
 
-        } catch (e: Exception) {
+        } catch (e: Exception)
+        {
 
             Result.Failure(mapError(e)) // ✅ FIXED
         }
     }
 
-    // 🔥 Proper error mapping (same as Auth)
+    // 🔥 Proper error mapping
     private fun mapError(e: Exception): DomainError {
         return when (e) {
-            is IOException -> DomainError.Network
-            else -> DomainError.Unknown(e.message)
+
+            is UnresolvedAddressException ->
+                DomainError.Network
+
+            is SocketTimeoutException ->
+                DomainError.Network
+
+            is ConnectException ->
+                DomainError.Network
+
+            is IOException ->
+                DomainError.Network
+
+            else ->
+                DomainError.Unknown(e.message)
         }
     }
-}
+    }

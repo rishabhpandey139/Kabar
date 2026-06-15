@@ -1,6 +1,4 @@
-package com.example.limitlesstech.limitlessnews.presentation.common
-
-
+package com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens
 
 data class SelectionUiState(
     val country: String = "in",
@@ -8,4 +6,3 @@ data class SelectionUiState(
     val sources: Set<String> = emptySet(),
     val searchQuery: String = ""
 )
-

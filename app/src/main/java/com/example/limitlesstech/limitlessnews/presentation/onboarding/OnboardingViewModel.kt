@@ -3,7 +3,7 @@ package com.example.limitlesstech.limitlessnews.presentation.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.limitlesstech.limitlessnews.R
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.presentation.onboarding.model.OnboardingPage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

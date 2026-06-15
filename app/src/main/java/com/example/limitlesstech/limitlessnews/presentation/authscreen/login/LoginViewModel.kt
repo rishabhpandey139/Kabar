@@ -3,9 +3,9 @@ package com.example.limitlesstech.limitlessnews.presentation.authscreen.login
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.domain.common.Result
-import com.example.limitlesstech.limitlessnews.domain.usecase.LoginUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.auth.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

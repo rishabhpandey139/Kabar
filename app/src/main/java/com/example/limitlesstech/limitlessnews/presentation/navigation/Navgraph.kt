@@ -12,12 +12,14 @@ import androidx.navigation.toRoute
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.forgot.ForgotScreen
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.login.LoginScreen
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.signup.SignupScreen
-import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
+import com.example.limitlesstech.limitlessnews.presentation.bookmark.BookmarkScreen
+import com.example.limitlesstech.limitlessnews.presentation.bookmark.BookmarkViewModel
 import com.example.limitlesstech.limitlessnews.presentation.detailScreen.DetailScreen
 import com.example.limitlesstech.limitlessnews.presentation.home.HomeScreen
 import com.example.limitlesstech.limitlessnews.presentation.home.HomeViewModel
 import com.example.limitlesstech.limitlessnews.presentation.onboarding.OnboardingScreen
 import com.example.limitlesstech.limitlessnews.presentation.splash.SplashScreen
+import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.SelectionViewModel
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.CountryScreen
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.SourceScreen
 import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.components.TopicScreen
@@ -33,7 +35,7 @@ fun AppNavGraph(
         startDestination = Routes.Splash
     ) {
 
-        // 🔥 Splash
+        // Splash
         composable<Routes.Splash> {
 
             SplashScreen(
@@ -41,7 +43,7 @@ fun AppNavGraph(
             )
         }
 
-        // 🔥 Onboarding
+        // Onboarding
         composable<Routes.Onboarding> {
 
             OnboardingScreen(
@@ -49,7 +51,7 @@ fun AppNavGraph(
             )
         }
 
-        // 🔥 Signup
+        // Signup
         composable<Routes.SignUp> {
 
             SignupScreen(
@@ -57,7 +59,7 @@ fun AppNavGraph(
             )
         }
 
-        // 🔥 Login
+        // Login
         composable<Routes.Login> {
 
             LoginScreen(
@@ -65,7 +67,7 @@ fun AppNavGraph(
             )
         }
 
-        // 🔥 Forgot Password
+        // Forgot
         composable<Routes.Forgot> {
 
             ForgotScreen(
@@ -73,16 +75,14 @@ fun AppNavGraph(
             )
         }
 
-        // 🔥 USER SELECTION GRAPH
+        // User Selection Graph
         navigation<Routes.UserSelection>(
             startDestination = Routes.Country
         ) {
 
-            // 🔥 Country
             composable<Routes.Country> {
 
                 val parentEntry = remember(navController) {
-
                     navController.getBackStackEntry(
                         Routes.UserSelection
                     )
@@ -97,11 +97,9 @@ fun AppNavGraph(
                 )
             }
 
-            // 🔥 Topic
             composable<Routes.Topic> {
 
                 val parentEntry = remember(navController) {
-
                     navController.getBackStackEntry(
                         Routes.UserSelection
                     )
@@ -116,11 +114,9 @@ fun AppNavGraph(
                 )
             }
 
-            // 🔥 Source
             composable<Routes.Source> {
 
                 val parentEntry = remember(navController) {
-
                     navController.getBackStackEntry(
                         Routes.UserSelection
                     )
@@ -136,35 +132,77 @@ fun AppNavGraph(
             }
         }
 
-        // 🔥 Home
-        composable<Routes.Home> {
+        // =========================
+        // MAIN GRAPH
+        // =========================
 
-            HomeScreen(
-                navController = navController
-            )
+        navigation<Routes.MainGraph>(
+            startDestination = Routes.Home
+        ) {
+
+            composable<Routes.Home> {
+
+                val parentEntry = remember(navController) {
+                    navController.getBackStackEntry(
+                        Routes.MainGraph
+                    )
+                }
+
+                val homeViewModel: HomeViewModel =
+                    hiltViewModel(parentEntry)
+
+                HomeScreen(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
+            }
+
+            composable<Routes.Bookmark> {
+
+                val parentEntry = remember(navController) {
+                    navController.getBackStackEntry(
+                        Routes.MainGraph
+                    )
+                }
+
+                val bookmarkViewModel: BookmarkViewModel =
+                    hiltViewModel(parentEntry)
+
+                BookmarkScreen(
+                    navController = navController,
+                    viewModel = bookmarkViewModel
+                )
+            }
+
+            composable<Routes.Profile> {
+
+                // ProfileScreen()
+            }
         }
 
-        // 🔥 Details
+        // Details Screen
         composable<Routes.Details> { backStackEntry ->
 
             val args =
                 backStackEntry.toRoute<Routes.Details>()
 
-            // 🔥 Shared HomeViewModel
             val parentEntry = remember(navController) {
-
                 navController.getBackStackEntry(
-                    Routes.Home
+                    Routes.MainGraph
                 )
             }
 
             val homeViewModel: HomeViewModel =
                 hiltViewModel(parentEntry)
 
+            val bookmarkViewModel: BookmarkViewModel =
+                hiltViewModel(parentEntry)
+
             DetailScreen(
                 navController = navController,
                 articleId = args.articleId,
-                viewModel = homeViewModel
+                viewModel = homeViewModel,
+                bookmarkViewModel = bookmarkViewModel
             )
         }
     }

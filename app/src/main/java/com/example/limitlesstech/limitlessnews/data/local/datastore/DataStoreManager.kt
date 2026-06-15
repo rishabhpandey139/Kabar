@@ -1,6 +1,6 @@
 // data/local/DataStoreManager.kt
 
-package com.example.limitlesstech.limitlessnews.data.local
+package com.example.limitlesstech.limitlessnews.data.local.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey

@@ -4,7 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.limitlesstech.limitlessnews.domain.common.Result
-import com.example.limitlesstech.limitlessnews.domain.usecase.ForgotPasswordUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.auth.ForgotPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

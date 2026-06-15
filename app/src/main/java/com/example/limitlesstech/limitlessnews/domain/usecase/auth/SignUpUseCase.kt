@@ -1,4 +1,4 @@
-package com.example.limitlesstech.limitlessnews.domain.usecase
+package com.example.limitlesstech.limitlessnews.domain.usecase.auth
 
 import android.util.Log
 import android.util.Patterns

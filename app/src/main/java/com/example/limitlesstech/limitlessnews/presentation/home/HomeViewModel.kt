@@ -1,14 +1,14 @@
-
 package com.example.limitlesstech.limitlessnews.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.domain.common.DomainError
 import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
-import com.example.limitlesstech.limitlessnews.domain.usecase.GetNewsUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val news: List<NewsArticle> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: DomainError? = null
 )
 
@@ -29,13 +29,44 @@ class HomeViewModel @Inject constructor(
     private val dataStore: DataStoreManager
 ) : ViewModel() {
 
+    companion object {
+
+        private var cachedNews: List<NewsArticle> =
+            emptyList()
+    }
+
     private val _uiState =
-        MutableStateFlow(HomeUiState())
+        MutableStateFlow(
+            HomeUiState(
+                news = cachedNews,
+                isLoading = cachedNews.isEmpty()
+            )
+        )
 
     val uiState: StateFlow<HomeUiState> =
         _uiState
 
     init {
+
+
+        if (cachedNews.isEmpty()) {
+
+            loadInitialNews()
+
+        } else {
+
+
+
+            _uiState.update {
+                it.copy(
+                    news = cachedNews,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    private fun loadInitialNews() {
 
         viewModelScope.launch {
 
@@ -71,19 +102,20 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            val result =
-                getNewsUseCase(filter)
-
-            when (result) {
+            when (val result = getNewsUseCase(filter)) {
 
                 is Result.Success -> {
 
+                    cachedNews = result.data
+
                     _uiState.update {
                         it.copy(
-                            news = result.data,
+                            news = cachedNews,
                             isLoading = false
                         )
                     }
+
+
                 }
 
                 is Result.Failure -> {
@@ -94,8 +126,12 @@ class HomeViewModel @Inject constructor(
                             error = result.error
                         )
                     }
+
+
                 }
             }
         }
+
+
     }
 }

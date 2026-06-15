@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.limitlesstech.limitlessnews.presentation.common.SelectionViewModel
+import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.SelectionViewModel
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 
 private data class UiCountry(

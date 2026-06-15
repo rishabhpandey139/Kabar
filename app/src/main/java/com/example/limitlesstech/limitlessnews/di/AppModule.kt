@@ -1,5 +1,10 @@
 package com.example.limitlesstech.limitlessnews.di
-
+//Room
+import androidx.room.Room
+import com.example.limitlesstech.limitlessnews.data.local.room.bookmark.BookmarkDao
+import com.example.limitlesstech.limitlessnews.data.local.room.bookmark.NewsDatabase
+import com.example.limitlesstech.limitlessnews.data.repositoryImpl.BookmarkRepositoryImpl
+import com.example.limitlesstech.limitlessnews.domain.repository.BookmarkRepository
 // Hilt
 import android.content.Context
 import dagger.Module
@@ -13,7 +18,6 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.*
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 
@@ -22,12 +26,12 @@ import kotlinx.serialization.json.Json
 
 // Project imports
 import com.example.limitlesstech.limitlessnews.core.network.NewsApi
-import com.example.limitlesstech.limitlessnews.data.local.DataStoreManager
+import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseAuthRepository
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.AuthRepository
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
-import com.example.limitlesstech.limitlessnews.domain.usecase.GetNewsUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetNewsUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.http.encodedPath
@@ -110,6 +114,38 @@ object AppModule {
     ): DataStoreManager {
 
         return DataStoreManager(context)
+    }
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): NewsDatabase {
+
+        return Room.databaseBuilder(//db banao
+            context,
+            NewsDatabase::class.java,//kon si database class user karni h
+            "news_db" //database ka naam
+        )
+            .fallbackToDestructiveMigration()//agar schema change hota h toh purana data delete kardo
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBookmarkDao(
+        db: NewsDatabase
+    ): BookmarkDao {
+
+        return db.bookmarkDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBookmarkRepository(
+        dao: BookmarkDao
+    ): BookmarkRepository {
+
+        return BookmarkRepositoryImpl(dao)
     }
 
 }
