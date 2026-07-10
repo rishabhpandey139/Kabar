@@ -17,9 +17,11 @@ import coil.compose.AsyncImage
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 
 @Composable
-fun TrendingCard(article: NewsArticle) {
+fun TrendingCard(
+    article: NewsArticle,
+    onClick: () -> Unit) {
 
-    Card(
+    Card( onClick = onClick,
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),

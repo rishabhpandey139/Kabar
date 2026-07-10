@@ -1,50 +1,104 @@
 package com.example.limitlesstech.limitlessnews.data.repositoryImpl
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.limitlesstech.limitlessnews.core.network.NewsApi
-import com.example.limitlesstech.limitlessnews.domain.common.Result
-import com.example.limitlesstech.limitlessnews.domain.common.DomainError
 import com.example.limitlesstech.limitlessnews.data.mapper.toDomain
+import com.example.limitlesstech.limitlessnews.data.paging.NewsPagingSource
+import com.example.limitlesstech.limitlessnews.domain.common.DomainError
+import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
 import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi
 ) : NewsRepository {
 
-    override suspend fun getNews(filter: NewsFilter): Result<List<NewsArticle>> {
+    /**
+     * Trending News - This function gets only the first (top/trending) news article from the API.
+     */
+    override suspend fun getTrendingNews(
+        filter: NewsFilter
+    ): Result<NewsArticle?> {
+
         return try {
+
             val sourcesParam = filter.sources
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
                 .joinToString(",")
 
-            val response = api.getTopHeadlines(
+            Log.d("TRENDING_API", "Sources: $sourcesParam")
+
+            val response = api.getTrendingNews(
                 country = filter.country,
                 category = filter.category,
                 sources = sourcesParam.ifBlank { null }
             )
 
-            val articles = response.articles.map { it.toDomain() }
+            response.articles.forEachIndexed { index, article ->
+                Log.d(
+                    "TRENDING_RESPONSE",
+                    "$index -> ${article.source?.name} | ${article.title}"
+                )
+            }
 
-            Result.Success(articles)
+            val trendingArticle = response
+                .articles
+                .firstOrNull()
+                ?.toDomain()
 
-        } catch (e: Exception)
-        {
+            Result.Success(trendingArticle)
 
-            Result.Failure(mapError(e)) // ✅ FIXED
+        } catch (e: Exception) {
+
+            Result.Failure(mapError(e))
         }
     }
 
-    // 🔥 Proper error mapping
-    private fun mapError(e: Exception): DomainError {
+    /**
+     * Infinite Paging News
+     */
+    //This function loads news page by page instead of loading all news at once.
+    override fun getPagedNews(
+        filter: NewsFilter
+    ): Flow<PagingData<NewsArticle>> {
+
+        return Pager(// Load the next page whenever the user scrolls.
+
+            config = PagingConfig(//sets the paging rules
+                pageSize = 20,// Load 20 news articles in one API call.
+                initialLoadSize = 20, //When the screen opens, load the first 20 articles.
+                prefetchDistance = 5,//When only 5 articles are left, automatically load the next page.
+                enablePlaceholders = false //Don't show empty placeholder items for articles that haven't loaded yet.
+            ),
+
+            pagingSourceFactory = {//Tells the Pager where to get the news from.
+                NewsPagingSource(//Creates a new NewsPagingSource, which makes the API calls page by page.
+                    api = api,
+                    filter = filter
+                )
+            }
+
+        ).flow//Returns a Flow that keeps sending new pages as the user scrolls.
+    }
+
+    /**
+     * Maps Network Exceptions
+     */
+    private fun mapError(
+        e: Exception
+    ): DomainError {
+
         return when (e) {
 
             is UnresolvedAddressException ->
@@ -63,4 +117,4 @@ class NewsRepositoryImpl @Inject constructor(
                 DomainError.Unknown(e.message)
         }
     }
-    }
+}

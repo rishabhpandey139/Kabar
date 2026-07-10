@@ -1,37 +1,51 @@
 package com.example.limitlesstech.limitlessnews.presentation.detailScreen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.example.limitlesstech.limitlessnews.di.SelectedArticleEntryPoint
 import com.example.limitlesstech.limitlessnews.presentation.bookmark.BookmarkViewModel
 import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.BottomActions
 import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.DetailContent
 import com.example.limitlesstech.limitlessnews.presentation.detailScreen.components.DetailTopBar
-import com.example.limitlesstech.limitlessnews.presentation.home.HomeViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun DetailScreen(
     articleId: String,
-    viewModel: HomeViewModel,
     navController: NavHostController,
     bookmarkViewModel: BookmarkViewModel
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    val selectedArticleManager = remember {
+
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            SelectedArticleEntryPoint::class.java
+        ).selectedArticleManager()
+
+    }
 
     val bookmarkedArticle by bookmarkViewModel
         .getBookmarkById(articleId)
         .collectAsState(initial = null)
 
     val article =
-        uiState.news.firstOrNull {//further improve searching do'n search artilce id from homeviewmodel if user click on bookmark screen
-            it.id == articleId
-        } ?: bookmarkedArticle
+        selectedArticleManager.getArticle()
+            ?: bookmarkedArticle
 
     Scaffold(
         topBar = {

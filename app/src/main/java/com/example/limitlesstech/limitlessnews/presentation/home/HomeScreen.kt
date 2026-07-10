@@ -1,17 +1,33 @@
 package com.example.limitlesstech.limitlessnews.presentation.home
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.limitlesstech.limitlessnews.di.SelectedArticleEntryPoint
 import com.example.limitlesstech.limitlessnews.domain.common.DomainError
 import com.example.limitlesstech.limitlessnews.presentation.common.components.MainBottomBar
 import com.example.limitlesstech.limitlessnews.presentation.home.components.HeaderSection
@@ -21,7 +37,9 @@ import com.example.limitlesstech.limitlessnews.presentation.home.components.Sect
 import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
 import com.example.limitlesstech.limitlessnews.presentation.home.shimmer.HomeShimmer
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
+import dagger.hilt.android.EntryPointAccessors
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -29,8 +47,28 @@ fun HomeScreen(
 ) {
 
     val state by homeViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    val selectedArticleManager = remember {
+
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            SelectedArticleEntryPoint::class.java
+        ).selectedArticleManager()
+
+    }
+
+    val pagingItems =
+        homeViewModel
+            .pagedNews
+            .collectAsState()
+            .value
+            .collectAsLazyPagingItems()
+
+    val pullToRefreshState = rememberPullToRefreshState()
 
     Scaffold(
+
         bottomBar = {
             MainBottomBar(
                 selectedRoute = Routes.Home,
@@ -62,55 +100,133 @@ fun HomeScreen(
                         "Something went wrong"
                 }
 
-                Text(
-                    text = message,
-                    modifier = Modifier.padding(padding),
-                    color = MaterialTheme.colorScheme.error
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Button(
+                        onClick = {
+
+                            pagingItems.refresh()
+                            homeViewModel.refresh()
+
+                        }
+                    ) {
+                        Text("Retry")
+                    }
+                }
             }
 
             else -> {
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
+//                PullToRefreshBox(
+//                    state = pullToRefreshState,
+//                    isRefreshing = pagingItems.loadState.refresh is LoadState.Loading,
+//                    onRefresh = {
+//                        pagingItems.refresh()
+//                        homeViewModel.refresh()
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(padding)
+//                )
 
-                    item {
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(padding)
+                    ) {
+                        item {
                         HeaderSection()
                     }
 
-                    item {
-                        SearchBar()
-                    }
-
-                    item {
-                        SectionTitle("Latest")
-                    }
-
-                    item {
-                        state.news.firstOrNull()?.let { article ->
-                            TrendingCard(article)
+                        item {
+                            SearchBar()
                         }
-                    }
 
-                    items(
-                        items = state.news,
-                        key = { it.id }
-                    ) { article ->
+                        item {
 
-                        NewsItem(
-                            article = article,
-                            onClick = {
-                                navController.navigate(
-                                    Routes.Details(article.id)
+                            state.trendingArticle?.let {
+
+                                TrendingCard(
+                                    article = it,
+                                    onClick = {
+                                        selectedArticleManager.setArticle(it)
+
+                                        navController.navigate(
+                                            Routes.Details(it.id)
+                                        )
+                                    }
                                 )
                             }
-                        )
-                    }
+                        }
+
+                        item {
+                            SectionTitle("Latest")
+                        }
+
+                        items(
+                            count = pagingItems.itemCount
+                        ) { index ->
+
+                            val article = pagingItems[index]
+
+                            if (article != null) {
+
+                                NewsItem(
+                                    article = article,
+                                    onClick = {
+
+                                        selectedArticleManager.setArticle(article)
+
+                                        navController.navigate(
+                                            Routes.Details(article.id)
+                                        )
+                                    }
+                                )
+                            }
+                        }
+
+                        when (pagingItems.loadState.append) {
+
+                            is LoadState.Loading -> {
+
+                                item {
+
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
+                            }
+
+                            is LoadState.Error -> {
+
+                                item {
+
+                                    Text(
+                                        text = "Failed to load more news",
+                                        modifier = Modifier.padding(16.dp),
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
+
+                            else -> Unit
+                        }                    }
                 }
             }
         }
     }
-}

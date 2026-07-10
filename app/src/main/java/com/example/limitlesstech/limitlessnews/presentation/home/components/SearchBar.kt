@@ -17,7 +17,11 @@ fun SearchBar() {
         placeholder = { Text("Search") },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = 16.dp
+            ),
         shape = RoundedCornerShape(12.dp)
     )
 }

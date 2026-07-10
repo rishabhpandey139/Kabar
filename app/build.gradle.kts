@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.androidx.paging.common.android)
     ksp("com.google.dagger:hilt-compiler:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 
@@ -95,4 +96,10 @@ dependencies {
 
     //Shimmer show during loading
     implementation("com.valentinilk.shimmer:compose-shimmer:1.3.3")
+
+    // Paging 3
+    implementation("androidx.paging:paging-runtime-ktx:3.3.6")
+
+// Paging Compose
+    implementation("androidx.paging:paging-compose:3.3.6")
 }

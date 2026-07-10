@@ -10,21 +10,88 @@ import javax.inject.Inject
 class NewsApi @Inject constructor(
     private val client: HttpClient,
 ) {
-    suspend fun getTopHeadlines(
+
+    /**
+     * Trending API
+     * Used only for Trending Card
+     */
+    suspend fun getTrendingNews(
         country: String?,
         category: String?,
         sources: String?
+
     ): NewsDto {
+
         return client.get("top-headlines") {
+
             parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
 
+            // Only one article is required
+            parameter("page", 1)
+            parameter("pageSize", 1)
+
             if (!sources.isNullOrBlank()) {
-                // NewsAPI rule: sources cannot be mixed with country/category
+
                 parameter("sources", sources)
+
             } else {
-                if (!country.isNullOrBlank()) parameter("country", country)
-                if (!category.isNullOrBlank()) parameter("category", category)
+
+                if (!country.isNullOrBlank()) {
+                    parameter("country", country)
+                }
+
+                if (!category.isNullOrBlank()) {
+                    parameter("category", category)
+                }
             }
+
+        }.body()
+    }
+
+    /**
+     * Paging API
+     * Used for infinite scrolling
+     */
+    suspend fun getPagedNews(
+        category: String?,
+        sources: String?,
+        page: Int,
+        pageSize: Int
+    ): NewsDto {
+
+        return client.get("everything") {
+
+            parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
+
+            parameter("page", page)
+            parameter("pageSize", pageSize)
+
+            if (!sources.isNullOrBlank()) {
+
+                parameter("sources", sources)
+
+            } else {
+
+                /**
+                 * everything endpoint requires q
+                 */
+                parameter(
+                    "q",
+                    category ?: "news"
+                )
+
+                parameter(
+                    "sortBy",
+                    "publishedAt"
+                )
+
+                // Optional
+                parameter(
+                    "language",
+                    "en"
+                )
+            }
+
         }.body()
     }
 }

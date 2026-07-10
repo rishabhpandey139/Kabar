@@ -201,8 +201,10 @@ fun AppNavGraph(
             DetailScreen(
                 navController = navController,
                 articleId = args.articleId,
-                viewModel = homeViewModel,
                 bookmarkViewModel = bookmarkViewModel
+
+
+
             )
         }
     }

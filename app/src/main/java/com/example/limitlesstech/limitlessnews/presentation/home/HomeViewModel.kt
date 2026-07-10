@@ -1,137 +1,139 @@
 package com.example.limitlesstech.limitlessnews.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
-import com.example.limitlesstech.limitlessnews.domain.common.DomainError
 import com.example.limitlesstech.limitlessnews.domain.common.Result
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsFilter
-import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetNewsUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetPagedNewsUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetTrendingNewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class HomeUiState(
-    val news: List<NewsArticle> = emptyList(),
-    val isLoading: Boolean = true,
-    val error: DomainError? = null
-)
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getNewsUseCase: GetNewsUseCase,
+
+    private val getTrendingNewsUseCase: GetTrendingNewsUseCase,
+
+    private val getPagedNewsUseCase: GetPagedNewsUseCase,
+
     private val dataStore: DataStoreManager
+
 ) : ViewModel() {
 
     companion object {
-
-        private var cachedNews: List<NewsArticle> =
-            emptyList()
+        private var cachedTrending: NewsArticle? = null
     }
 
-    private val _uiState =
-        MutableStateFlow(
-            HomeUiState(
-                news = cachedNews,
-                isLoading = cachedNews.isEmpty()
-            )
+    private val _uiState = MutableStateFlow(
+        HomeUiState(
+            trendingArticle = cachedTrending,
+            isLoading = cachedTrending == null
         )
+    )
 
-    val uiState: StateFlow<HomeUiState> =
-        _uiState
+    val uiState: StateFlow<HomeUiState> = _uiState
+
+    private val _pagedNews =
+        MutableStateFlow<Flow<PagingData<NewsArticle>>>(emptyFlow())
+
+    val pagedNews: StateFlow<Flow<PagingData<NewsArticle>>> =
+        _pagedNews
 
     init {
-
-
-        if (cachedNews.isEmpty()) {
-
-            loadInitialNews()
-
-        } else {
-
-
-
-            _uiState.update {
-                it.copy(
-                    news = cachedNews,
-                    isLoading = false
-                )
-            }
-        }
+        loadInitialNews()
     }
 
     private fun loadInitialNews() {
 
         viewModelScope.launch {
 
-            val country =
-                dataStore.country.first()
-
-            val topic =
-                dataStore.topic.first()
-
-            val sources =
-                dataStore.sources.first()
-
-            loadNews(
-                NewsFilter(
-                    country = country,
-                    category = topic,
-                    sources = sources
-                )
+            val filter = NewsFilter(
+                country = dataStore.country.first(),
+                category = dataStore.topic.first(),
+                sources = dataStore.sources.first()
             )
+
+            loadTrendingNews(filter)
+
+            _pagedNews.value =
+                getPagedNewsUseCase(filter)
+                    .cachedIn(viewModelScope)
         }
     }
 
-    private fun loadNews(
+    private suspend fun loadTrendingNews(
         filter: NewsFilter
     ) {
 
-        viewModelScope.launch {
+        if (cachedTrending != null) {
 
             _uiState.update {
+
                 it.copy(
-                    isLoading = true,
-                    error = null
+                    trendingArticle = cachedTrending,
+                    isLoading = false
                 )
             }
 
-            when (val result = getNewsUseCase(filter)) {
+            return
+        }
 
-                is Result.Success -> {
+        when (val result = getTrendingNewsUseCase(filter)) {
 
-                    cachedNews = result.data
+            is Result.Success -> {
 
-                    _uiState.update {
-                        it.copy(
-                            news = cachedNews,
-                            isLoading = false
-                        )
-                    }
+                cachedTrending = result.data
 
+                _uiState.update {
 
+                    it.copy(
+                        trendingArticle = result.data,
+                        isLoading = false,
+                        error = null
+                    )
                 }
+            }
 
-                is Result.Failure -> {
+            is Result.Failure -> {
 
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.error
-                        )
-                    }
+                _uiState.update {
 
-
+                    it.copy(
+                        isLoading = false,
+                        error = result.error
+                    )
                 }
             }
         }
+    }
+    fun refresh() {
 
+        viewModelScope.launch {
 
+            cachedTrending = null
+
+            val filter = NewsFilter(
+                country = dataStore.country.first(),
+                category = dataStore.topic.first(),
+                sources = dataStore.sources.first()
+            )
+
+            loadTrendingNews(filter)
+
+            _pagedNews.value =
+                getPagedNewsUseCase(filter)
+                    .cachedIn(viewModelScope)
+        }
     }
 }

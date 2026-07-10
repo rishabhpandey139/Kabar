@@ -31,13 +31,15 @@ import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseAuthR
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.AuthRepository
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
-import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetNewsUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetTrendingNewsUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.http.encodedPath
 
 // Javax
 import javax.inject.Singleton
+import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetPagedNewsUseCase
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -87,8 +89,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetNewsUseCase(repository: NewsRepository): GetNewsUseCase {
-        return GetNewsUseCase(repository)
+    fun provideGetTrendingNewsUseCase(repository: NewsRepository): GetTrendingNewsUseCase{
+        return GetTrendingNewsUseCase(repository)
+    }
+    @Provides
+    @Singleton
+    fun provideGetPagedNewsUseCase(
+        repository: NewsRepository
+    ): GetPagedNewsUseCase {
+
+        return GetPagedNewsUseCase(repository)
+
     }
     @Provides
     @Singleton
