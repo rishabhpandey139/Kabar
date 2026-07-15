@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,16 +38,20 @@ import com.example.limitlesstech.limitlessnews.presentation.home.components.Sect
 import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
 import com.example.limitlesstech.limitlessnews.presentation.home.shimmer.HomeShimmer
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
+import com.example.limitlesstech.limitlessnews.presentation.search.SearchViewModel
 import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    searchViewModel: SearchViewModel=hiltViewModel()
 ) {
 
     val state by homeViewModel.uiState.collectAsState()
+    val searchState by searchViewModel.uiState.collectAsState()
+
     val context = LocalContext.current
 
     val selectedArticleManager = remember {
@@ -64,6 +69,18 @@ fun HomeScreen(
             .collectAsState()
             .value
             .collectAsLazyPagingItems()
+    val searchPagingItems =
+        searchViewModel
+            .searchResults
+            .collectAsLazyPagingItems()
+
+    val currentPagingItems =
+        if (searchState.query.isBlank()) {
+            pagingItems
+        } else {
+            searchPagingItems
+        }
+
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -78,15 +95,15 @@ fun HomeScreen(
     ) { padding ->
 
         when {
-
-            state.isLoading -> {
+                //home loading
+            state.isLoading && searchState.query.isBlank() -> {
 
                 HomeShimmer(
                     modifier = Modifier.padding(padding)
                 )
             }
-
-            state.error != null -> {
+                //home error
+            state.error != null && searchState.query.isBlank() -> { //home error ui
 
                 val message = when (state.error) {
 
@@ -129,8 +146,51 @@ fun HomeScreen(
                     }
                 }
             }
+            // 3. Search Error
+            searchState.query.isNotBlank() &&
+                    searchPagingItems.loadState.refresh is LoadState.Error -> {
+                        val error = searchPagingItems.loadState.refresh as LoadState.Error
 
+                val message = when (error.error) {
+
+                    is java.io.IOException,
+                    is java.net.SocketTimeoutException,
+                    is java.net.ConnectException,
+                    is io.ktor.util.network.UnresolvedAddressException ->
+                        "No Internet Connection"
+
+                    else ->
+                        "Search failed"
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        text = "Search failed",
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Button(
+                        onClick = {
+                            searchPagingItems.refresh()
+                        }
+                    ) {
+                        Text("Retry")
+                    }
+                }
+            }
             else -> {
+
 
 //                PullToRefreshBox(
 //                    state = pullToRefreshState,
@@ -154,35 +214,46 @@ fun HomeScreen(
                     }
 
                         item {
-                            SearchBar()
+                            SearchBar(
+                                query = searchState.query,
+                                onQueryChange = searchViewModel::onQueryChange
+                            )
                         }
+                        if (searchState.query.isBlank()) {
 
-                        item {
+                            item {
 
-                            state.trendingArticle?.let {
+                                state.trendingArticle?.let {
 
-                                TrendingCard(
-                                    article = it,
-                                    onClick = {
-                                        selectedArticleManager.setArticle(it)
+                                    TrendingCard(
+                                        article = it,
+                                        onClick = {
+                                            selectedArticleManager.setArticle(it)
 
-                                        navController.navigate(
-                                            Routes.Details(it.id)
-                                        )
-                                    }
-                                )
+                                            navController.navigate(
+                                                Routes.Details(it.id)
+                                            )
+                                        }
+                                    )
+                                }
                             }
                         }
 
+
                         item {
-                            SectionTitle("Latest")
+                            SectionTitle(
+                                if (searchState.query.isBlank())
+                                    "Latest"
+                                else
+                                    "Search Results"
+                            )
                         }
 
                         items(
-                            count = pagingItems.itemCount
+                            count = currentPagingItems.itemCount
                         ) { index ->
 
-                            val article = pagingItems[index]
+                            val article = currentPagingItems[index]
 
                             if (article != null) {
 
@@ -200,7 +271,7 @@ fun HomeScreen(
                             }
                         }
 
-                        when (pagingItems.loadState.append) {
+                        when (currentPagingItems.loadState.append) {
 
                             is LoadState.Loading -> {
 

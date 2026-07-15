@@ -13,9 +13,12 @@ interface NewsRepository {
     ): Result<NewsArticle?>
 
 
-    fun getPagedNews(
+    fun getPagedNews(//used for home screen news list
         filter: NewsFilter
     ): Flow<PagingData<NewsArticle>>
 
+    fun searchNews(//used for search result news list
+        query: String
+    ): Flow<PagingData<NewsArticle>>
 
 }

@@ -50,7 +50,7 @@ class NewsApi @Inject constructor(
 
     /**
      * Paging API
-     * Used for infinite scrolling
+     * Used for infinite scrolling for home feed
      */
     suspend fun getPagedNews(
         category: String?,
@@ -69,6 +69,11 @@ class NewsApi @Inject constructor(
             if (!sources.isNullOrBlank()) {
 
                 parameter("sources", sources)
+                // Optional
+                parameter(
+                    "language",
+                    "en"
+                )
 
             } else {
 
@@ -94,4 +99,31 @@ class NewsApi @Inject constructor(
 
         }.body()
     }
+    /**
+     * Search News API
+     * Used only for Search
+     */
+    suspend fun searchNews(
+        query: String,
+        page: Int,
+        pageSize: Int
+    ): NewsDto {
+
+        return client.get("everything") {
+
+            parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
+
+            parameter("q", query)
+
+            parameter("page", page)
+
+            parameter("pageSize", pageSize)
+
+            parameter("sortBy", "publishedAt")
+
+            parameter("language", "en")
+
+        }.body()
+    }
+
 }

@@ -18,6 +18,7 @@ import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
+import com.example.limitlesstech.limitlessnews.data.paging.SearchPagingSource
 
 class NewsRepositoryImpl @Inject constructor(
     private val api: NewsApi
@@ -90,6 +91,29 @@ class NewsRepositoryImpl @Inject constructor(
             }
 
         ).flow//Returns a Flow that keeps sending new pages as the user scrolls.
+
+    }
+    override fun searchNews(
+        query: String
+    ): Flow<PagingData<NewsArticle>> {
+
+        return Pager(
+
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+                prefetchDistance = 5,
+                enablePlaceholders = false
+            ),
+
+            pagingSourceFactory = {
+                SearchPagingSource(
+                    api = api,
+                    query = query
+                )
+            }
+
+        ).flow
     }
 
     /**
