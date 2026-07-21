@@ -41,6 +41,10 @@ import javax.inject.Singleton
 import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetPagedNewsUseCase
 
 
+import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NetworkRepositoryImpl
+import com.example.limitlesstech.limitlessnews.domain.repository.NetworkRepository
+
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -157,6 +161,13 @@ object AppModule {
     ): BookmarkRepository {
 
         return BookmarkRepositoryImpl(dao)
+    }
+    @Provides
+    @Singleton
+    fun provideNetworkRepository(
+        @ApplicationContext context: Context
+    ): NetworkRepository {
+        return NetworkRepositoryImpl(context)
     }
 
 }

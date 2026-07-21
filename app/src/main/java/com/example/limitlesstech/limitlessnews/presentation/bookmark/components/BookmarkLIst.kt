@@ -10,7 +10,6 @@ import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 fun BookmarkList(
 
     modifier: Modifier = Modifier,
-
     articles: List<NewsArticle>,
 
     onArticleClick: (String) -> Unit

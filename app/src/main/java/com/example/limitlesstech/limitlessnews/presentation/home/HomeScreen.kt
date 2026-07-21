@@ -172,7 +172,7 @@ fun HomeScreen(
                 ) {
 
                     Text(
-                        text = "Search failed",
+                        text = message,
                         color = MaterialTheme.colorScheme.error
                     )
 

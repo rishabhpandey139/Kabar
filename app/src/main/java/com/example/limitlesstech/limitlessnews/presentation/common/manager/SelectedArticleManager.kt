@@ -4,6 +4,7 @@ import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import javax.inject.Inject
 import javax.inject.Singleton
 
+//It temporarily stores the selected news article so it can be used on another screen.
 @Singleton
 class SelectedArticleManager @Inject constructor() {
 

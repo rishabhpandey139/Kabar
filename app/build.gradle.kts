@@ -102,4 +102,6 @@ dependencies {
 
 // Paging Compose
     implementation("androidx.paging:paging-compose:3.3.6")
+
+    implementation("androidx.browser:browser:1.8.0")//open article in chrome custom tabs
 }

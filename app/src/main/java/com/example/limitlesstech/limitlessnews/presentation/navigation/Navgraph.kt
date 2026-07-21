@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.example.limitlesstech.limitlessnews.presentation.profile.FillProfileScreen
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.forgot.ForgotScreen
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.login.LoginScreen
 import com.example.limitlesstech.limitlessnews.presentation.authscreen.signup.SignupScreen
@@ -176,7 +177,15 @@ fun AppNavGraph(
 
             composable<Routes.Profile> {
 
-                // ProfileScreen()
+                FillProfileScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onNextClick = {
+                        // TODO
+                    }
+                )
+
             }
         }
 

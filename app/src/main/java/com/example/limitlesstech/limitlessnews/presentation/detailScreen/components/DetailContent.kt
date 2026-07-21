@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,15 +28,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
 import com.example.limitlesstech.limitlessnews.presentation.bookmark.BookmarkViewModel
+import coil.compose.AsyncImage
+
 
 @Composable
 fun DetailContent(
     article: NewsArticle,
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    onReadFullArticleClick: () -> Unit
+){
 
 
 
@@ -43,7 +47,7 @@ fun DetailContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
 
         // 🔥 Header
@@ -97,7 +101,28 @@ fun DetailContent(
             text = article.content,
             style = MaterialTheme.typography.bodyLarge
         )
-
         Spacer(Modifier.height(24.dp))
+
+        HorizontalDivider()
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "Articles are truncated because of the NewsAPI Developer plan. Continue reading on the publisher's website.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        if (article.link.isNotBlank()) {
+
+            ReadFullArticleButton(
+                onClick = onReadFullArticleClick
+            )
+
+            Spacer(Modifier.height(24.dp))
+        }
+
     }
 }

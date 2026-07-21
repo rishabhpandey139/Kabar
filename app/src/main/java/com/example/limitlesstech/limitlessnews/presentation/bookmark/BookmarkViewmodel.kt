@@ -27,7 +27,6 @@ class BookmarkViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-
         private var cachedBookmarks:
                 List<NewsArticle> = emptyList()
 
