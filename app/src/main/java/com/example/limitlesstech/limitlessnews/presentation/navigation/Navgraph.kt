@@ -182,7 +182,17 @@ fun AppNavGraph(
                         navController.popBackStack()
                     },
                     onNextClick = {
-                        // TODO
+                        navController.navigate(Routes.Home) {
+
+                            launchSingleTop = true
+
+                            restoreState = true
+
+                            popUpTo(Routes.MainGraph) {
+                                saveState = true
+                            }
+
+                        }
                     }
                 )
 

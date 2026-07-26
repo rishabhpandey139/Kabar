@@ -1,6 +1,8 @@
 package com.example.limitlesstech.limitlessnews.features.profile.presentation.components
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,9 +24,18 @@ import coil.compose.AsyncImage
 @Composable
 fun ProfileImagePicker(
     imageUri: Uri?,
-    onImageClick: () -> Unit,
+    onImageSelected: (Uri?) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri ->
+
+            onImageSelected(uri)
+
+        }
 
     Box(
         modifier = modifier.size(120.dp),
@@ -38,7 +49,11 @@ fun ProfileImagePicker(
                 .size(120.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
-                .clickable { onImageClick() },
+                .clickable {
+
+                    launcher.launch("image/*")
+
+                },
             contentScale = ContentScale.Crop
         )
 
@@ -47,13 +62,17 @@ fun ProfileImagePicker(
                 .size(34.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
-                .clickable { onImageClick() },
+                .clickable {
+
+                    launcher.launch("image/*")
+
+                },
             contentAlignment = Alignment.Center
         ) {
 
             Icon(
                 imageVector = Icons.Default.CameraAlt,
-                contentDescription = "Camera",
+                contentDescription = "Pick Image",
                 tint = Color.White,
                 modifier = Modifier.size(18.dp)
             )
@@ -61,4 +80,5 @@ fun ProfileImagePicker(
         }
 
     }
+
 }

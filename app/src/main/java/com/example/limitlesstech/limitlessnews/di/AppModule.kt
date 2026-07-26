@@ -28,6 +28,7 @@ import kotlinx.serialization.json.Json
 import com.example.limitlesstech.limitlessnews.core.network.NewsApi
 import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseAuthRepository
+import com.example.limitlesstech.limitlessnews.data.repositoryImpl.FirebaseProfileRepository
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NewsRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.AuthRepository
 import com.example.limitlesstech.limitlessnews.domain.repository.NewsRepository
@@ -43,6 +44,11 @@ import com.example.limitlesstech.limitlessnews.domain.usecase.news.GetPagedNewsU
 
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.NetworkRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.NetworkRepository
+import com.example.limitlesstech.limitlessnews.domain.repository.ProfileRepository
+import com.example.limitlesstech.limitlessnews.domain.usecase.profile.SaveProfileUseCase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.example.limitlesstech.limitlessnews.core.network.CloudinaryUploader
+
 
 
 @Module
@@ -169,5 +175,38 @@ object AppModule {
     ): NetworkRepository {
         return NetworkRepositoryImpl(context)
     }
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
+    @Provides
+    @Singleton
+    fun provideCloudinaryUploader(
+        @ApplicationContext context: Context
+    ): CloudinaryUploader {
+        return CloudinaryUploader(context)
+    }
+    @Provides
+    @Singleton
+    fun provideProfileRepository(
+        firebaseAuth: FirebaseAuth,
+        firestore: FirebaseFirestore,
+        cloudinaryUploader: CloudinaryUploader
+    ): ProfileRepository {
 
+        return FirebaseProfileRepository(
+            firebaseAuth = firebaseAuth,
+            firestore = firestore,
+            cloudinaryUploader = cloudinaryUploader
+        )
+    }
+    @Provides
+    @Singleton
+    fun provideSaveProfileUseCase(
+        repository: ProfileRepository
+    ): SaveProfileUseCase {
+
+        return SaveProfileUseCase(repository)
+    }
 }

@@ -104,4 +104,18 @@ dependencies {
     implementation("androidx.paging:paging-compose:3.3.6")
 
     implementation("androidx.browser:browser:1.8.0")//open article in chrome custom tabs
+
+// Firebase Firestore-Used to store and retrieve user data (e.g., profile name, email, bio) from Firebase Firestore.
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+// Firebase Storage-Used to upload and download files (e.g., profile images) from Firebase Storage.
+    implementation("com.google.firebase:firebase-storage-ktx")
+
+// await() support-Lets you use await() so Firebase tasks run asynchronously without callbacks, making the code simpler and cleaner.
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
+//okhttp
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.json:json:20250517")
+
 }
