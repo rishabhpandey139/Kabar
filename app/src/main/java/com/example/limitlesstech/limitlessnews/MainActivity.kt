@@ -3,6 +3,7 @@ package com.example.limitlesstech.limitlessnews
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            enableEdgeToEdge()
             LimitlessNewsTheme {
                 val navController = rememberNavController()
                 AppNavGraph(navController = navController)

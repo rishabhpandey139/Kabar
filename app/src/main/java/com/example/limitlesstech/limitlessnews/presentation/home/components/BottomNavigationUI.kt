@@ -3,6 +3,7 @@ package com.example.limitlesstech.limitlessnews.presentation.home.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +33,8 @@ fun BottomBar() {
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(50.dp)), // 🔥 rounded corners
+                .height(60.dp)
+                .clip(RoundedCornerShape(50.dp)), //  rounded corners
 
 
 
@@ -45,12 +47,7 @@ fun BottomBar() {
                 label = { Text("Home") }
             )
 
-            NavigationBarItem(
-                selected = false,
-                onClick = {},
-                icon = { Icon(Icons.Default.Search, contentDescription = null) },
-                label = { Text("Explore") }
-            )
+
 
             NavigationBarItem(
                 selected = false,
