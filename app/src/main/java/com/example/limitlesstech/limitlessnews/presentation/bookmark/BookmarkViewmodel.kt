@@ -1,6 +1,5 @@
 package com.example.limitlesstech.limitlessnews.presentation.bookmark
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
@@ -27,11 +26,11 @@ class BookmarkViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
+
         private var cachedBookmarks:
                 List<NewsArticle> = emptyList()
 
-        private var hasLoadedBookmarks =
-            false
+        private var hasLoadedBookmarks = false
     }
 
     private val _uiState =
@@ -46,7 +45,6 @@ class BookmarkViewModel @Inject constructor(
         _uiState.asStateFlow()
 
     init {
-
         observeBookmarks()
     }
 
@@ -62,7 +60,6 @@ class BookmarkViewModel @Inject constructor(
                     hasLoadedBookmarks = true
 
                     _uiState.update {
-
                         it.copy(
                             isLoading = false,
                             bookmarks = cachedBookmarks
@@ -72,13 +69,35 @@ class BookmarkViewModel @Inject constructor(
         }
     }
 
+    fun onSearchQueryChange(
+        query: String
+    ) {
+
+        _uiState.update {
+            it.copy(
+                searchQuery = query
+            )
+        }
+    }
+
+    fun clearSearch() {
+
+        _uiState.update {
+            it.copy(
+                searchQuery = ""
+            )
+        }
+    }
+
     fun toggleBookmark(
         article: NewsArticle
     ) {
 
         viewModelScope.launch {
 
-            toggleBookmarkUseCase(article)
+            toggleBookmarkUseCase(
+                article
+            )
         }
     }
 

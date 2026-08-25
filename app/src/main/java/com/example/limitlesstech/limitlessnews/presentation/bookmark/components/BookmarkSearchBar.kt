@@ -1,15 +1,13 @@
 package com.example.limitlesstech.limitlessnews.presentation.bookmark.components
 
-
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +16,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BookmarkSearchBar(
     query: String,
-    onQueryChange: (String) -> Unit
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     OutlinedTextField(
@@ -27,15 +26,14 @@ fun BookmarkSearchBar(
 
         onValueChange = onQueryChange,
 
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 16.dp,
-                vertical = 12.dp
-            ),
+        modifier = modifier
+            .fillMaxWidth(),
 
         placeholder = {
-            Text("Search")
+
+            Text(
+                text = "Search"
+            )
         },
 
         leadingIcon = {
@@ -46,21 +44,18 @@ fun BookmarkSearchBar(
             )
         },
 
-        trailingIcon = {
+        shape = RoundedCornerShape(12.dp),
 
-            IconButton(
-                onClick = { }
-            ) {
+        singleLine = true,
 
-                Icon(
-                    imageVector = Icons.Outlined.Tune,
-                    contentDescription = "Filter"
-                )
-            }
-        },
+        colors =
+            OutlinedTextFieldDefaults.colors(
 
-        shape = RoundedCornerShape(16.dp),
+                focusedBorderColor =
+                    MaterialTheme.colorScheme.primary,
 
-        singleLine = true
+                unfocusedBorderColor =
+                    MaterialTheme.colorScheme.outline
+            )
     )
 }

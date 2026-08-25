@@ -138,17 +138,6 @@ fun BookmarkCard(
             }
         }
 
-        IconButton(
-            onClick = { }
-        ) {
 
-            Icon(
-
-                imageVector =
-                    Icons.Default.MoreVert,
-
-                contentDescription = "Menu"
-            )
-        }
     }
 }
