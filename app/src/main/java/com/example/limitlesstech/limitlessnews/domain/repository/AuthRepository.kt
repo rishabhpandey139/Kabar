@@ -12,4 +12,6 @@ interface AuthRepository {
 
     suspend fun forgotPassword(email: String): Result<Unit>
 
+    suspend fun logout(): Result<Unit>
+
 }

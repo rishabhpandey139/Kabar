@@ -1,5 +1,7 @@
 package com.example.limitlesstech.limitlessnews.presentation.profile
 
+import android.net.Uri
+
 sealed interface ProfileEvent {
 
     data class UsernameChanged(
@@ -19,10 +21,14 @@ sealed interface ProfileEvent {
     ) : ProfileEvent
 
     data class ImageChanged(
-        val value: android.net.Uri?
+        val value: Uri?
     ) : ProfileEvent
 
     data object SaveProfile : ProfileEvent
+
+    data object UpdateProfile : ProfileEvent
+
+    data object LoadProfile : ProfileEvent
 
     data object ClearErrorMessage : ProfileEvent
 }

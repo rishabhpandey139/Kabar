@@ -14,15 +14,14 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirebaseProfileRepository @Inject constructor(
-
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val cloudinaryUploader: CloudinaryUploader
-
 ) : ProfileRepository {
 
     companion object {
         private const val TAG = "PROFILE"
+        private const val USERS_COLLECTION = "users"
     }
 
     override suspend fun saveProfile(
@@ -35,16 +34,8 @@ class FirebaseProfileRepository @Inject constructor(
 
         return try {
 
-            Log.d(TAG, "saveProfile() started")
-
             val user = firebaseAuth.currentUser
                 ?: return Result.Failure(DomainError.UserNotLoggedIn)
-
-            val uid = user.uid
-
-            Log.d(TAG, "User uid = $uid")
-
-            Log.d(TAG, "Uploading image...")
 
             val imageUrl = if (imageUri != null) {
                 cloudinaryUploader.uploadImage(imageUri)
@@ -52,10 +43,8 @@ class FirebaseProfileRepository @Inject constructor(
                 ""
             }
 
-            Log.d(TAG, "Image URL = $imageUrl")
-
             val profile = FirestoreUserProfile(
-                uid = uid,
+                uid = user.uid,
                 username = username,
                 fullName = fullName,
                 email = email,
@@ -63,20 +52,134 @@ class FirebaseProfileRepository @Inject constructor(
                 profileImageUrl = imageUrl
             )
 
-            Log.d(TAG, "Saving to Firestore...")
-
-            firestore.collection("users")
-                .document(uid)
+            firestore
+                .collection(USERS_COLLECTION)
+                .document(user.uid)
                 .set(profile)
                 .await()
-
-            Log.d(TAG, "Firestore save completed")
 
             Result.Success(Unit)
 
         } catch (e: Exception) {
 
-            Log.e(TAG, "Repository Error", e)
+            Log.e(TAG, "Save profile error", e)
+
+            Result.Failure(
+                ProfileErrorMapper.map(e)
+            )
+        }
+    }
+
+    override suspend fun getProfile(): Result<FirestoreUserProfile> {
+
+        return try {
+
+            val user = firebaseAuth.currentUser
+                ?: return Result.Failure(DomainError.UserNotLoggedIn)
+
+            val document = firestore
+                .collection(USERS_COLLECTION)
+                .document(user.uid)
+                .get()
+                .await()
+
+            if (!document.exists()) {
+                return Result.Failure(
+                    DomainError.ProfileSaveFailed
+                )
+            }
+
+            val profile = document.toObject(
+                FirestoreUserProfile::class.java
+            ) ?: return Result.Failure(
+                DomainError.ProfileSaveFailed
+            )
+
+            Result.Success(profile)
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "Get profile error", e)
+
+            Result.Failure(
+                ProfileErrorMapper.map(e)
+            )
+        }
+    }
+
+    override suspend fun updateProfile(
+        username: String,
+        fullName: String,
+        email: String,
+        phone: String,
+        imageUri: Uri?
+    ): Result<Unit> {
+
+        return try {
+
+            val user = firebaseAuth.currentUser
+                ?: return Result.Failure(DomainError.UserNotLoggedIn)
+
+            val documentRef = firestore
+                .collection(USERS_COLLECTION)
+                .document(user.uid)
+
+            val oldProfile = documentRef
+                .get()
+                .await()
+                .toObject(FirestoreUserProfile::class.java)
+
+            val imageUrl = if (imageUri != null) {
+                cloudinaryUploader.uploadImage(imageUri)
+            } else {
+                oldProfile?.profileImageUrl.orEmpty()
+            }
+
+            val updatedProfile = FirestoreUserProfile(
+                uid = user.uid,
+                username = username,
+                fullName = fullName,
+                email = email,
+                phone = phone,
+                profileImageUrl = imageUrl,
+                createdAt = oldProfile?.createdAt
+                    ?: System.currentTimeMillis()
+            )
+
+            documentRef
+                .set(updatedProfile)
+                .await()
+
+            Result.Success(Unit)
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "Update profile error", e)
+
+            Result.Failure(
+                ProfileErrorMapper.map(e)
+            )
+        }
+    }
+
+    override suspend fun isProfileCompleted(): Result<Boolean> {
+
+        return try {
+
+            val user = firebaseAuth.currentUser
+                ?: return Result.Success(false)
+
+            val document = firestore
+                .collection(USERS_COLLECTION)
+                .document(user.uid)
+                .get()
+                .await()
+
+            Result.Success(document.exists())
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "Check profile error", e)
 
             Result.Failure(
                 ProfileErrorMapper.map(e)

@@ -21,7 +21,8 @@ import dagger.hilt.android.EntryPointAccessors
 @Composable
 fun BookmarkScreen(
     navController: NavHostController,
-    viewModel: BookmarkViewModel
+    viewModel: BookmarkViewModel,
+    onProfileClick: () -> Unit
 ) {
 
     val state by viewModel.uiState.collectAsState()
@@ -29,22 +30,22 @@ fun BookmarkScreen(
     val context = LocalContext.current
 
     val selectedArticleManager = remember {
+
         EntryPointAccessors.fromApplication(
             context.applicationContext,
             SelectedArticleEntryPoint::class.java
         ).selectedArticleManager()
     }
 
-
     Scaffold(
-
         modifier = Modifier.fillMaxSize(),
 
         bottomBar = {
 
             MainBottomBar(
                 selectedRoute = Routes.Bookmark,
-                navController = navController
+                navController = navController,
+                onProfileClick = onProfileClick
             )
         }
 
@@ -69,14 +70,12 @@ fun BookmarkScreen(
             else -> {
 
                 BookmarkList(
-
                     modifier = Modifier.padding(padding),
-
                     articles = state.bookmarks,
 
                     onArticleClick = { articleId ->
-                        selectedArticleManager.clear()
 
+                        selectedArticleManager.clear()
 
                         navController.navigate(
                             Routes.Details(articleId)

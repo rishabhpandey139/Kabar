@@ -7,16 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,6 +37,8 @@ import com.example.limitlesstech.limitlessnews.presentation.home.components.Sect
 import com.example.limitlesstech.limitlessnews.presentation.home.components.TrendingCard
 import com.example.limitlesstech.limitlessnews.presentation.home.shimmer.HomeShimmer
 import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
+import com.example.limitlesstech.limitlessnews.presentation.profile.ProfileEvent
+import com.example.limitlesstech.limitlessnews.presentation.profile.ProfileViewModel
 import com.example.limitlesstech.limitlessnews.presentation.search.SearchViewModel
 import dagger.hilt.android.EntryPointAccessors
 
@@ -46,11 +47,22 @@ import dagger.hilt.android.EntryPointAccessors
 fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
-    searchViewModel: SearchViewModel=hiltViewModel()
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    onProfileClick: () -> Unit
 ) {
 
     val state by homeViewModel.uiState.collectAsState()
+
     val searchState by searchViewModel.uiState.collectAsState()
+
+    val profileState by profileViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.onEvent(
+            ProfileEvent.LoadProfile
+        )
+    }
 
     val context = LocalContext.current
 
@@ -60,7 +72,6 @@ fun HomeScreen(
             context.applicationContext,
             SelectedArticleEntryPoint::class.java
         ).selectedArticleManager()
-
     }
 
     val pagingItems =
@@ -69,6 +80,7 @@ fun HomeScreen(
             .collectAsState()
             .value
             .collectAsLazyPagingItems()
+
     val searchPagingItems =
         searchViewModel
             .searchResults
@@ -81,29 +93,37 @@ fun HomeScreen(
             searchPagingItems
         }
 
-
-    val pullToRefreshState = rememberPullToRefreshState()
+    val pullToRefreshState =
+        rememberPullToRefreshState()
 
     Scaffold(
 
         bottomBar = {
+
             MainBottomBar(
                 selectedRoute = Routes.Home,
-                navController = navController
+                navController = navController,
+
+                onProfileClick = onProfileClick
             )
         }
+
     ) { padding ->
 
         when {
-                //home loading
-            state.isLoading && searchState.query.isBlank() -> {
+
+            // Home loading
+            state.isLoading &&
+                    searchState.query.isBlank() -> {
 
                 HomeShimmer(
                     modifier = Modifier.padding(padding)
                 )
             }
-                //home error
-            state.error != null && searchState.query.isBlank() -> { //home error ui
+
+            // Home error
+            state.error != null &&
+                    searchState.query.isBlank() -> {
 
                 val message = when (state.error) {
 
@@ -121,35 +141,51 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+                    verticalArrangement =
+                        Arrangement.Center,
+
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally
                 ) {
 
                     Text(
                         text = message,
-                        color = MaterialTheme.colorScheme.error
+
+                        color =
+                            MaterialTheme
+                                .colorScheme
+                                .error
                     )
 
                     Spacer(
-                        modifier = Modifier.height(16.dp)
+                        modifier =
+                            Modifier.height(16.dp)
                     )
 
                     Button(
                         onClick = {
 
                             pagingItems.refresh()
-                            homeViewModel.refresh()
 
+                            homeViewModel.refresh()
                         }
                     ) {
+
                         Text("Retry")
                     }
                 }
             }
-            // 3. Search Error
+
+            // Search error
             searchState.query.isNotBlank() &&
-                    searchPagingItems.loadState.refresh is LoadState.Error -> {
-                        val error = searchPagingItems.loadState.refresh as LoadState.Error
+                    searchPagingItems.loadState.refresh
+                            is LoadState.Error -> {
+
+                val error =
+                    searchPagingItems
+                        .loadState
+                        .refresh as LoadState.Error
 
                 val message = when (error.error) {
 
@@ -167,17 +203,26 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+                    verticalArrangement =
+                        Arrangement.Center,
+
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally
                 ) {
 
                     Text(
                         text = message,
-                        color = MaterialTheme.colorScheme.error
+
+                        color =
+                            MaterialTheme
+                                .colorScheme
+                                .error
                     )
 
                     Spacer(
-                        modifier = Modifier.height(16.dp)
+                        modifier =
+                            Modifier.height(16.dp)
                     )
 
                     Button(
@@ -185,119 +230,145 @@ fun HomeScreen(
                             searchPagingItems.refresh()
                         }
                     ) {
+
                         Text("Retry")
                     }
                 }
             }
+
             else -> {
 
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
 
-//                PullToRefreshBox(
-//                    state = pullToRefreshState,
-//                    isRefreshing = pagingItems.loadState.refresh is LoadState.Loading,
-//                    onRefresh = {
-//                        pagingItems.refresh()
-//                        homeViewModel.refresh()
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(padding)
-//                )
+                    item {
 
-
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(padding)
-                    ) {
-                        item {
-                        HeaderSection()
+                        HeaderSection(
+                            profileImageUrl =
+                                profileState.existingImageUrl
+                        )
                     }
 
+                    item {
+
+                        SearchBar(
+                            query =
+                                searchState.query,
+
+                            onQueryChange =
+                                searchViewModel::onQueryChange
+                        )
+                    }
+
+                    if (searchState.query.isBlank()) {
+
                         item {
-                            SearchBar(
-                                query = searchState.query,
-                                onQueryChange = searchViewModel::onQueryChange
-                            )
-                        }
-                        if (searchState.query.isBlank()) {
 
-                            item {
-
-                                state.trendingArticle?.let {
+                            state
+                                .trendingArticle
+                                ?.let { article ->
 
                                     TrendingCard(
-                                        article = it,
+                                        article = article,
+
                                         onClick = {
-                                            selectedArticleManager.setArticle(it)
+
+                                            selectedArticleManager
+                                                .setArticle(article)
 
                                             navController.navigate(
-                                                Routes.Details(it.id)
+                                                Routes.Details(
+                                                    article.id
+                                                )
                                             )
                                         }
                                     )
                                 }
-                            }
                         }
+                    }
 
+                    item {
 
-                        item {
-                            SectionTitle(
-                                if (searchState.query.isBlank())
-                                    "Latest"
-                                else
-                                    "Search Results"
+                        SectionTitle(
+                            if (searchState.query.isBlank()) {
+                                "Latest"
+                            } else {
+                                "Search Results"
+                            }
+                        )
+                    }
+
+                    items(
+                        count =
+                            currentPagingItems.itemCount
+                    ) { index ->
+
+                        val article =
+                            currentPagingItems[index]
+
+                        if (article != null) {
+
+                            NewsItem(
+                                article = article,
+
+                                onClick = {
+
+                                    selectedArticleManager
+                                        .setArticle(article)
+
+                                    navController.navigate(
+                                        Routes.Details(
+                                            article.id
+                                        )
+                                    )
+                                }
                             )
                         }
+                    }
 
-                        items(
-                            count = currentPagingItems.itemCount
-                        ) { index ->
+                    when (
+                        currentPagingItems
+                            .loadState
+                            .append
+                    ) {
 
-                            val article = currentPagingItems[index]
+                        is LoadState.Loading -> {
 
-                            if (article != null) {
+                            item {
 
-                                NewsItem(
-                                    article = article,
-                                    onClick = {
-
-                                        selectedArticleManager.setArticle(article)
-
-                                        navController.navigate(
-                                            Routes.Details(article.id)
-                                        )
-                                    }
+                                CircularProgressIndicator(
+                                    modifier =
+                                        Modifier.padding(16.dp)
                                 )
                             }
                         }
 
-                        when (currentPagingItems.loadState.append) {
+                        is LoadState.Error -> {
 
-                            is LoadState.Loading -> {
+                            item {
 
-                                item {
+                                Text(
+                                    text =
+                                        "Failed to load more news",
 
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.padding(16.dp)
-                                    )
-                                }
+                                    modifier =
+                                        Modifier.padding(16.dp),
+
+                                    color =
+                                        MaterialTheme
+                                            .colorScheme
+                                            .error
+                                )
                             }
+                        }
 
-                            is LoadState.Error -> {
-
-                                item {
-
-                                    Text(
-                                        text = "Failed to load more news",
-                                        modifier = Modifier.padding(16.dp),
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            }
-
-                            else -> Unit
-                        }                    }
+                        else -> Unit
+                    }
                 }
             }
         }
     }
+}

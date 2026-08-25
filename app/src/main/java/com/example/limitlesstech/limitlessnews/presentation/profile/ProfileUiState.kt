@@ -14,9 +14,13 @@ data class ProfileUiState(
 
     val imageUri: Uri? = null,
 
+    val existingImageUrl: String = "",
+
     val isLoading: Boolean = false,
 
     val isSuccess: Boolean = false,
+
+    val isProfileLoaded: Boolean = false,
 
     val errorMessage: String? = null
 )

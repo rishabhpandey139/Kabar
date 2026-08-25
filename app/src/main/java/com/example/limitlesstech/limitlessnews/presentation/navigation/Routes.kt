@@ -32,7 +32,6 @@ sealed class Routes {
     @Serializable
     data object Source : Routes()
 
-    // NEW
     @Serializable
     data object MainGraph : Routes()
 
@@ -43,7 +42,10 @@ sealed class Routes {
     data object Bookmark : Routes()
 
     @Serializable
-    data object Profile : Routes()
+    data object FillProfile : Routes()
+
+    @Serializable
+    data object EditProfile : Routes()
 
     @Serializable
     data class Details(

@@ -9,5 +9,5 @@ data class BottomNavItem(
 
     val icon: ImageVector,
 
-    val route: Routes
+    val route: Routes?
 )

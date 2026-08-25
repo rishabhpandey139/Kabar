@@ -49,6 +49,9 @@ import com.example.limitlesstech.limitlessnews.domain.usecase.profile.SaveProfil
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.limitlesstech.limitlessnews.core.network.CloudinaryUploader
 
+import com.example.limitlesstech.limitlessnews.domain.usecase.profile.GetProfileUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.profile.UpdateProfileUseCase
+
 
 
 @Module
@@ -208,5 +211,20 @@ object AppModule {
     ): SaveProfileUseCase {
 
         return SaveProfileUseCase(repository)
+    }
+    @Provides
+    @Singleton
+    fun provideGetProfileUseCase(
+        repository: ProfileRepository
+    ): GetProfileUseCase {
+        return GetProfileUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateProfileUseCase(
+        repository: ProfileRepository
+    ): UpdateProfileUseCase {
+        return UpdateProfileUseCase(repository)
     }
 }

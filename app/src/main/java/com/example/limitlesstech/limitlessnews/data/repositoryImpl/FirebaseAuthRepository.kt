@@ -49,4 +49,19 @@ class FirebaseAuthRepository @Inject constructor(
     }
 
 
+    override suspend fun logout(): Result<Unit> {
+
+        return try {
+
+            firebaseAuth.signOut()
+
+            Result.Success(Unit)
+
+        } catch (e: Exception) {
+
+            Result.Failure(
+                AuthErrorMapper.mapLoginError(e)
+            )
+        }
+    }
 }

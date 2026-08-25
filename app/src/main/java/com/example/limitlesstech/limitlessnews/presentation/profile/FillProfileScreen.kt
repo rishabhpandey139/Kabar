@@ -36,6 +36,7 @@ import com.example.limitlesstech.limitlessnews.features.profile.presentation.com
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FillProfileScreen(
+    isEditMode: Boolean = false,
     onBackClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
@@ -47,58 +48,101 @@ fun FillProfileScreen(
         SnackbarHostState()
     }
 
+    LaunchedEffect(isEditMode) {
+
+        if (isEditMode) {
+            viewModel.onEvent(
+                ProfileEvent.LoadProfile
+            )
+        }
+    }
+
     LaunchedEffect(uiState.isSuccess) {
+
         if (uiState.isSuccess) {
             onNextClick()
-
         }
     }
 
     LaunchedEffect(uiState.errorMessage) {
+
         uiState.errorMessage?.let {
+
             snackbarHostState.showSnackbar(it)
 
-            // Remove this line if ClearErrorMessage doesn't exist.
-            viewModel.onEvent(ProfileEvent.ClearErrorMessage)
+            viewModel.onEvent(
+                ProfileEvent.ClearErrorMessage
+            )
         }
     }
 
     Scaffold(
+
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
         },
+
         topBar = {
+
             CenterAlignedTopAppBar(
+
                 title = {
-                    Text("Fill Your Profile")
+
+                    Text(
+                        text = if (isEditMode) {
+                            "Edit Profile"
+                        } else {
+                            "Fill Your Profile"
+                        }
+                    )
                 },
+
                 navigationIcon = {
+
                     IconButton(
                         onClick = onBackClick
                     ) {
+
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector =
+                                Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+
+                colors =
+                    TopAppBarDefaults
+                        .centerAlignedTopAppBarColors()
             )
         }
+
     ) { innerPadding ->
 
         Column(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+
+            horizontalAlignment =
+                Alignment.CenterHorizontally
         ) {
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
 
+            // Profile Image
             ProfileImagePicker(
                 imageUri = uiState.imageUri,
+
+                // Existing Cloudinary image for Edit Profile
+                existingImageUrl = uiState.existingImageUrl,
+
                 onImageSelected = {
                     viewModel.onEvent(
                         ProfileEvent.ImageChanged(it)
@@ -106,7 +150,9 @@ fun FillProfileScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(
+                modifier = Modifier.height(32.dp)
+            )
 
             ProfileTextField(
                 value = uiState.username,
@@ -119,7 +165,9 @@ fun FillProfileScreen(
                 placeholder = "Enter username"
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
             ProfileTextField(
                 value = uiState.fullName,
@@ -132,7 +180,9 @@ fun FillProfileScreen(
                 placeholder = "Enter full name"
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
             ProfileTextField(
                 value = uiState.email,
@@ -148,7 +198,9 @@ fun FillProfileScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
             ProfileTextField(
                 value = uiState.phone,
@@ -164,17 +216,28 @@ fun FillProfileScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
 
             NextButton(
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .padding(bottom = 20.dp),
+
                 isLoading = uiState.isLoading,
+
                 onClick = {
+
                     viewModel.onEvent(
-                        ProfileEvent.SaveProfile
+
+                        if (isEditMode) {
+                            ProfileEvent.UpdateProfile
+                        } else {
+                            ProfileEvent.SaveProfile
+                        }
                     )
                 }
             )

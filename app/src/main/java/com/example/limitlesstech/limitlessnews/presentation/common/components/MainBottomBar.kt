@@ -1,4 +1,5 @@
 package com.example.limitlesstech.limitlessnews.presentation.common.components
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
@@ -15,7 +16,8 @@ import com.example.limitlesstech.limitlessnews.presentation.navigation.Routes
 @Composable
 fun MainBottomBar(
     selectedRoute: Routes,
-    navController: NavHostController
+    navController: NavHostController,
+    onProfileClick: () -> Unit = {}
 ) {
 
     val items = listOf(
@@ -35,7 +37,7 @@ fun MainBottomBar(
         BottomNavItem(
             title = "Profile",
             icon = Icons.Default.Person,
-            route = Routes.Profile
+            route = null
         )
     )
 
@@ -45,22 +47,33 @@ fun MainBottomBar(
 
             NavigationBarItem(
 
-                selected =
-                    item.route == selectedRoute,
+                selected = item.route == selectedRoute,
 
                 onClick = {
 
-                    if (item.route != selectedRoute) {
+                    if (item.title == "Profile") {
+
+                        onProfileClick()
+
+                    } else if (
+                        item.route != null &&
+                        item.route != selectedRoute
+                    ) {
 
                         navController.navigate(item.route) {
 
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                            popUpTo(
+                                navController
+                                    .graph
+                                    .findStartDestination()
+                                    .id
+                            ) {
+                                saveState = true
+                            }
 
-                                launchSingleTop = true
+                            launchSingleTop = true
 
-                                restoreState = true
+                            restoreState = true
                         }
                     }
                 },

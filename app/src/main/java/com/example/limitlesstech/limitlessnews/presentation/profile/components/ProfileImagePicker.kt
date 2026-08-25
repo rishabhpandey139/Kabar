@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 @Composable
 fun ProfileImagePicker(
     imageUri: Uri?,
+    existingImageUrl: String = "",
     onImageSelected: (Uri?) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -34,8 +35,10 @@ fun ProfileImagePicker(
         ) { uri ->
 
             onImageSelected(uri)
-
         }
+
+    val imageModel =
+        imageUri ?: existingImageUrl.ifBlank { null }
 
     Box(
         modifier = modifier.size(120.dp),
@@ -43,16 +46,14 @@ fun ProfileImagePicker(
     ) {
 
         AsyncImage(
-            model = imageUri,
+            model = imageModel,
             contentDescription = "Profile Image",
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray)
                 .clickable {
-
                     launcher.launch("image/*")
-
                 },
             contentScale = ContentScale.Crop
         )
@@ -63,9 +64,7 @@ fun ProfileImagePicker(
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
                 .clickable {
-
                     launcher.launch("image/*")
-
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -76,9 +75,6 @@ fun ProfileImagePicker(
                 tint = Color.White,
                 modifier = Modifier.size(18.dp)
             )
-
         }
-
     }
-
 }

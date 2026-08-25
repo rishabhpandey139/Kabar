@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.limitlesstech.limitlessnews.domain.common.DomainError
 import com.example.limitlesstech.limitlessnews.domain.common.Result
+import com.example.limitlesstech.limitlessnews.domain.usecase.profile.GetProfileUseCase
 import com.example.limitlesstech.limitlessnews.domain.usecase.profile.SaveProfileUseCase
+import com.example.limitlesstech.limitlessnews.domain.usecase.profile.UpdateProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,60 +17,109 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val saveProfileUseCase: SaveProfileUseCase
+    private val saveProfileUseCase: SaveProfileUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
+    private val updateProfileUseCase: UpdateProfileUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ProfileUiState())
-    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(
+        ProfileUiState()
+    )
+
+    val uiState: StateFlow<ProfileUiState> =
+        _uiState.asStateFlow()
 
     fun onEvent(event: ProfileEvent) {
 
         when (event) {
 
             is ProfileEvent.UsernameChanged -> {
-
                 _uiState.update {
                     it.copy(username = event.value)
                 }
             }
 
             is ProfileEvent.FullNameChanged -> {
-
                 _uiState.update {
                     it.copy(fullName = event.value)
                 }
             }
 
             is ProfileEvent.EmailChanged -> {
-
                 _uiState.update {
                     it.copy(email = event.value)
                 }
             }
 
             is ProfileEvent.PhoneChanged -> {
-
                 _uiState.update {
                     it.copy(phone = event.value)
                 }
             }
 
             is ProfileEvent.ImageChanged -> {
-
                 _uiState.update {
                     it.copy(imageUri = event.value)
                 }
             }
 
             ProfileEvent.SaveProfile -> {
-
                 saveProfile()
             }
-            is ProfileEvent.ClearErrorMessage -> {
+
+            ProfileEvent.UpdateProfile -> {
+                updateProfile()
+            }
+
+            ProfileEvent.LoadProfile -> {
+                loadProfile()
+            }
+
+            ProfileEvent.ClearErrorMessage -> {
                 _uiState.update {
-                    it.copy(
-                        errorMessage = null
-                    )
+                    it.copy(errorMessage = null)
+                }
+            }
+        }
+    }
+
+    private fun loadProfile() {
+
+        if (_uiState.value.isProfileLoaded) return
+
+        viewModelScope.launch {
+
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
+
+            when (val result = getProfileUseCase()) {
+
+                is Result.Success -> {
+
+                    val profile = result.data
+
+                    _uiState.update {
+                        it.copy(
+                            username = profile.username,
+                            fullName = profile.fullName,
+                            email = profile.email,
+                            phone = profile.phone,
+                            existingImageUrl = profile.profileImageUrl,
+                            isLoading = false,
+                            isProfileLoaded = true
+                        )
+                    }
+                }
+
+                is Result.Failure -> {
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = mapError(result.error)
+                        )
+                    }
                 }
             }
         }
@@ -81,32 +132,24 @@ class ProfileViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = true,
-                    errorMessage = null
+                    errorMessage = null,
+                    isSuccess = false
                 )
             }
 
             when (
-
                 val result = saveProfileUseCase(
-
                     username = _uiState.value.username,
-
                     fullName = _uiState.value.fullName,
-
                     email = _uiState.value.email,
-
                     phone = _uiState.value.phone,
-
                     imageUri = _uiState.value.imageUri
-
                 )
-
             ) {
 
                 is Result.Success -> {
 
                     _uiState.update {
-
                         it.copy(
                             isLoading = false,
                             isSuccess = true
@@ -117,7 +160,6 @@ class ProfileViewModel @Inject constructor(
                 is Result.Failure -> {
 
                     _uiState.update {
-
                         it.copy(
                             isLoading = false,
                             errorMessage = mapError(result.error)
@@ -128,7 +170,55 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun mapError(error: DomainError): String {
+    private fun updateProfile() {
+
+        viewModelScope.launch {
+
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    isSuccess = false
+                )
+            }
+
+            when (
+                val result = updateProfileUseCase(
+                    username = _uiState.value.username,
+                    fullName = _uiState.value.fullName,
+                    email = _uiState.value.email,
+                    phone = _uiState.value.phone,
+                    imageUri = _uiState.value.imageUri
+                )
+            ) {
+
+                is Result.Success -> {
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isSuccess = true,
+                            isProfileLoaded = true
+                        )
+                    }
+                }
+
+                is Result.Failure -> {
+
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = mapError(result.error)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun mapError(
+        error: DomainError
+    ): String {
 
         return when (error) {
 
@@ -160,7 +250,7 @@ class ProfileViewModel @Inject constructor(
                 "Image upload failed"
 
             DomainError.ProfileSaveFailed ->
-                "Unable to save profile"
+                "Unable to process profile"
 
             DomainError.Network ->
                 "No internet connection"
