@@ -1,39 +1,53 @@
 package com.example.limitlesstech.limitlessnews.data.repositoryImpl
 
-
 import com.example.limitlesstech.limitlessnews.data.local.room.bookmark.BookmarkDao
 import com.example.limitlesstech.limitlessnews.data.local.room.mapper.toBookmarkEntity
 import com.example.limitlesstech.limitlessnews.data.local.room.mapper.toNewsArticle
 import com.example.limitlesstech.limitlessnews.domain.model.NewsArticle
-
 import com.example.limitlesstech.limitlessnews.domain.repository.BookmarkRepository
-import kotlinx.coroutines.flow.first
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-
-//Ye file bookmark add, remove aur check karne ka logic handle karti hai.
-
 class BookmarkRepositoryImpl @Inject constructor(
-    private val dao: BookmarkDao
+    private val dao: BookmarkDao,
+    private val firebaseAuth: FirebaseAuth
 ) : BookmarkRepository {
+
+    private fun currentUserId(): String? {
+        return firebaseAuth.currentUser?.uid
+    }
 
     override suspend fun toggleBookmark(
         article: NewsArticle
     ) {
 
+        val userId =
+            currentUserId()
+                ?: return
+
         val isSaved =
-            dao.isBookmarked(article.id).first()//check article is already bookmarked or not
+            dao.isBookmarked(
+                id = article.id,
+                userId = userId
+            ).first()
 
         if (isSaved) {
 
-            dao.deleteBookmarkById(article.id)//Bookmark remove karo
+            dao.deleteBookmarkById(
+                id = article.id,
+                userId = userId
+            )
 
-        } else {//nhi h toh bookmark add karo
+        } else {
 
             dao.insertBookmark(
-                article.toBookmarkEntity()//NewsArticle ko database format me convert karo
+                article.toBookmarkEntity(
+                    userId = userId
+                )
             )
         }
     }
@@ -42,28 +56,47 @@ class BookmarkRepositoryImpl @Inject constructor(
         id: String
     ): Flow<Boolean> {
 
-        return dao.isBookmarked(id)
-    }//UI ko batao bookmarked hai ya nahi
+        val userId =
+            currentUserId()
+                ?: return flowOf(false)
 
-
+        return dao.isBookmarked(
+            id = id,
+            userId = userId
+        )
+    }
 
     override fun getBookmarkedArticleById(
         id: String
     ): Flow<NewsArticle?> {
 
-        return dao.getBookmarkById(id).map { it?.toNewsArticle()}
+        val userId =
+            currentUserId()
+                ?: return flowOf(null)
 
+        return dao.getBookmarkById(
+            id = id,
+            userId = userId
+        ).map { entity ->
 
+            entity?.toNewsArticle()
         }
+    }
 
     override fun getBookmarkedArticles():
             Flow<List<NewsArticle>> {
 
-        return dao.getBookmarks().map { list ->
+        val userId =
+            currentUserId()
+                ?: return flowOf(emptyList())
 
-            list.map {
-                it.toNewsArticle()
+        return dao.getBookmarks(
+            userId = userId
+        ).map { list ->
+
+            list.map { entity ->
+                entity.toNewsArticle()
             }
         }
     }
-    }
+}

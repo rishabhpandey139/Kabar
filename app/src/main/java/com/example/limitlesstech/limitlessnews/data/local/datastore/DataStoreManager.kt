@@ -1,5 +1,3 @@
-// data/local/DataStoreManager.kt
-
 package com.example.limitlesstech.limitlessnews.data.local.datastore
 
 import android.content.Context
@@ -7,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,34 +18,39 @@ private val Context.dataStore by preferencesDataStore(
 
 @Singleton
 class DataStoreManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val firebaseAuth: FirebaseAuth
 ) {
 
-    companion object {//it behave like singleton but inside memember
+    companion object {
 
-        // 🔥 Login & Onboarding -Keys Set
         private val IS_LOGGED_IN =
             booleanPreferencesKey("is_logged_in")
 
         private val IS_ONBOARDING_DONE =
             booleanPreferencesKey("is_onboarding_done")
-
-        // 🔥 User Selection
-        private val COUNTRY =
-            stringPreferencesKey("country")
-
-        private val TOPIC =
-            stringPreferencesKey("topic")
-
-        private val SOURCES =
-            stringPreferencesKey("sources")
     }
 
-    // ------------------------------------------------
-    // 🔥 LOGIN value set+read
-    // ------------------------------------------------
+    private fun currentUserId(): String? {
+        return firebaseAuth.currentUser?.uid
+    }
 
-    suspend fun saveLoginState(value: Boolean) {
+    private fun countryKey(userId: String) =
+        stringPreferencesKey("country_$userId")
+
+    private fun topicKey(userId: String) =
+        stringPreferencesKey("topic_$userId")
+
+    private fun sourcesKey(userId: String) =
+        stringPreferencesKey("sources_$userId")
+
+    // --------------------------------
+    // LOGIN
+    // --------------------------------
+
+    suspend fun saveLoginState(
+        value: Boolean
+    ) {
 
         context.dataStore.edit { pref ->
             pref[IS_LOGGED_IN] = value
@@ -58,11 +62,13 @@ class DataStoreManager @Inject constructor(
             pref[IS_LOGGED_IN] ?: false
         }
 
-    // ------------------------------------------------
-    // 🔥 ONBOARDING value set+read
-    // ------------------------------------------------
+    // --------------------------------
+    // ONBOARDING
+    // --------------------------------
 
-    suspend fun saveOnboardingState(value: Boolean) {
+    suspend fun saveOnboardingState(
+        value: Boolean
+    ) {
 
         context.dataStore.edit { pref ->
             pref[IS_ONBOARDING_DONE] = value
@@ -74,58 +80,105 @@ class DataStoreManager @Inject constructor(
             pref[IS_ONBOARDING_DONE] ?: false
         }
 
-    // ------------------------------------------------
-    // 🔥 COUNTRY value set+read
-    // ------------------------------------------------
+    // --------------------------------
+    // COUNTRY - UID BASED
+    // --------------------------------
 
-    suspend fun saveCountry(value: String) {
+    suspend fun saveCountry(
+        value: String
+    ) {
+
+        val userId = currentUserId()
+            ?: return
 
         context.dataStore.edit { pref ->
-            pref[COUNTRY] = value
+            pref[countryKey(userId)] = value
         }
     }
 
-    val country: Flow<String> =
-        context.dataStore.data.map { pref ->
-            pref[COUNTRY] ?: "in"
+    val country: Flow<String>
+        get() {
+
+            val userId = currentUserId()
+
+            return context.dataStore.data.map { pref ->
+
+                if (userId == null) {
+                    "in"
+                } else {
+                    pref[countryKey(userId)] ?: "in"
+                }
+            }
         }
 
-    // ------------------------------------------------
-    // 🔥 TOPIC
-    // ------------------------------------------------
+    // --------------------------------
+    // TOPIC - UID BASED
+    // --------------------------------
 
-    suspend fun saveTopic(value: String) {
+    suspend fun saveTopic(
+        value: String
+    ) {
+
+        val userId = currentUserId()
+            ?: return
 
         context.dataStore.edit { pref ->
-            pref[TOPIC] = value
+            pref[topicKey(userId)] = value
         }
     }
 
-    val topic: Flow<String> =
-        context.dataStore.data.map { pref ->
-            pref[TOPIC] ?: "general"
+    val topic: Flow<String>
+        get() {
+
+            val userId = currentUserId()
+
+            return context.dataStore.data.map { pref ->
+
+                if (userId == null) {
+                    "general"
+                } else {
+                    pref[topicKey(userId)] ?: "general"
+                }
+            }
         }
 
-    // ------------------------------------------------
-    // 🔥 SOURCES
-    // ------------------------------------------------
+    // --------------------------------
+    // SOURCES - UID BASED
+    // --------------------------------
 
-    suspend fun saveSources(value: Set<String>) {//unique value take karega set
+    suspend fun saveSources(
+        value: Set<String>
+    ) {
+
+        val userId = currentUserId()
+            ?: return
 
         context.dataStore.edit { pref ->
 
-            pref[SOURCES] =
+            pref[sourcesKey(userId)] =
                 value.joinToString(",")
         }
     }
 
-    val sources: Flow<Set<String>> =
-        context.dataStore.data.map { pref ->
+    val sources: Flow<Set<String>>
+        get() {
 
-            pref[SOURCES]
-                ?.split(",")
-                ?.filter { it.isNotBlank() }
-                ?.toSet()
-                ?: emptySet()
+            val userId = currentUserId()
+
+            return context.dataStore.data.map { pref ->
+
+                if (userId == null) {
+                    emptySet()
+                } else {
+
+                    pref[sourcesKey(userId)]
+                        ?.split(",")
+                        ?.filter {
+                            it.isNotBlank()
+                        }
+                        ?.toSet()
+                        ?: emptySet()
+                }
+            }
         }
 }

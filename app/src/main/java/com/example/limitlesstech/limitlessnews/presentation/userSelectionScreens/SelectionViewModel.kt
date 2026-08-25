@@ -3,10 +3,10 @@ package com.example.limitlesstech.limitlessnews.presentation.userSelectionScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.limitlesstech.limitlessnews.data.local.datastore.DataStoreManager
-import com.example.limitlesstech.limitlessnews.presentation.userSelectionScreens.SelectionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,15 +17,48 @@ class SelectionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(SelectionUiState())
+        MutableStateFlow(
+            SelectionUiState()
+        )
 
     val uiState: StateFlow<SelectionUiState> =
         _uiState
 
-    fun setCountry(code: String) {
+    init {
+        observeUserSelections()
+    }
+
+    private fun observeUserSelections() {
+
+        viewModelScope.launch {
+
+            combine(
+                dataStore.country,
+                dataStore.topic,
+                dataStore.sources
+            ) { country, topic, sources ->
+
+                SelectionUiState(
+                    country = country,
+                    topic = topic,
+                    sources = sources,
+                    searchQuery = _uiState.value.searchQuery
+                )
+            }.collect { state ->
+
+                _uiState.value = state
+            }
+        }
+    }
+
+    fun setCountry(
+        code: String
+    ) {
 
         _uiState.update {
-            it.copy(country = code)
+            it.copy(
+                country = code
+            )
         }
 
         viewModelScope.launch {
@@ -33,10 +66,14 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    fun setTopic(topic: String) {
+    fun setTopic(
+        topic: String
+    ) {
 
         _uiState.update {
-            it.copy(topic = topic)
+            it.copy(
+                topic = topic
+            )
         }
 
         viewModelScope.launch {
@@ -44,36 +81,50 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    fun toggleSource(id: String) {
+    fun toggleSource(
+        id: String
+    ) {
 
-        _uiState.update { s ->
+        val nextSources =
+            _uiState.value.sources
+                .toMutableSet()
 
-            val next = s.sources.toMutableSet()
+        if (nextSources.contains(id)) {
+            nextSources.remove(id)
+        } else {
+            nextSources.add(id)
+        }
 
-            if (next.contains(id))
-                next.remove(id)
-            else
-                next.add(id)
+        _uiState.update {
+            it.copy(
+                sources = nextSources
+            )
+        }
 
-            viewModelScope.launch {
-                dataStore.saveSources(next)
-            }
-
-            s.copy(sources = next)
+        viewModelScope.launch {
+            dataStore.saveSources(
+                nextSources
+            )
         }
     }
 
-    fun setSearchQuery(q: String) {
+    fun setSearchQuery(
+        query: String
+    ) {
 
         _uiState.update {
-            it.copy(searchQuery = q)
+            it.copy(
+                searchQuery = query
+            )
         }
     }
 
     fun clearSearch() {
 
         _uiState.update {
-            it.copy(searchQuery = "")
+            it.copy(
+                searchQuery = ""
+            )
         }
     }
 }

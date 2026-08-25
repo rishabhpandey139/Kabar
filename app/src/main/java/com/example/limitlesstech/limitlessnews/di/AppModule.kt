@@ -2,7 +2,6 @@ package com.example.limitlesstech.limitlessnews.di
 //Room
 import androidx.room.Room
 import com.example.limitlesstech.limitlessnews.data.local.room.bookmark.BookmarkDao
-import com.example.limitlesstech.limitlessnews.data.local.room.bookmark.NewsDatabase
 import com.example.limitlesstech.limitlessnews.data.repositoryImpl.BookmarkRepositoryImpl
 import com.example.limitlesstech.limitlessnews.domain.repository.BookmarkRepository
 // Hilt
@@ -48,6 +47,7 @@ import com.example.limitlesstech.limitlessnews.domain.repository.ProfileReposito
 import com.example.limitlesstech.limitlessnews.domain.usecase.profile.SaveProfileUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.limitlesstech.limitlessnews.core.network.CloudinaryUploader
+import com.example.limitlesstech.limitlessnews.data.local.room.NewsDatabase
 
 import com.example.limitlesstech.limitlessnews.domain.usecase.profile.GetProfileUseCase
 import com.example.limitlesstech.limitlessnews.domain.usecase.profile.UpdateProfileUseCase
@@ -134,10 +134,14 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDataStoreManager(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        firebaseAuth: FirebaseAuth
     ): DataStoreManager {
 
-        return DataStoreManager(context)
+        return DataStoreManager(
+            context = context,
+            firebaseAuth = firebaseAuth
+        )
     }
     @Provides
     @Singleton
@@ -162,14 +166,17 @@ object AppModule {
 
         return db.bookmarkDao()
     }
-
     @Provides
     @Singleton
     fun provideBookmarkRepository(
-        dao: BookmarkDao
+        dao: BookmarkDao,
+        firebaseAuth: FirebaseAuth
     ): BookmarkRepository {
 
-        return BookmarkRepositoryImpl(dao)
+        return BookmarkRepositoryImpl(
+            dao = dao,
+            firebaseAuth = firebaseAuth
+        )
     }
     @Provides
     @Singleton
