@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📰 LimitlessNews
+# 📰 LimitlessNews(Kabar)
 
 ### A modern Android news application built with Kotlin, Jetpack Compose, Clean Architecture & MVVM
 
@@ -523,6 +523,50 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 </p>
 
 ---
+## 🎥 App Demo
+
+A complete walkthrough of **LimitlessNews(Kabar)**, showcasing the main features, architecture, and user experience.
+
+<p align="center">
+  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
+    <img
+      src="https://img.youtube.com/vi/HrLp7nKVYEc/maxresdefault.jpg"
+      width="700"
+      alt="LimitlessNews App Demo"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <b>▶️ Click the preview above to watch the complete LimitlessNews(kabar) app demo</b>
+</p>
+
+### 🚀 Demo Highlights
+Splash
+   ↓
+Onboarding
+   ↓
+Authentication
+   ↓
+Topic Selection
+   ↓
+Country Selection
+   ↓
+News Source Selection
+   ↓
+Personalized Home Feed
+   ↓
+Infinite Scrolling with Paging 3
+   ↓
+Search News
+   ↓
+Article Details
+   ↓
+Bookmark Articles
+   ↓
+Profile & Edit Profile
+   ↓
+Logout
 
 ## 🚪 Logout
 
@@ -534,25 +578,7 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
   <b>Logout</b>
 </p>
 
-# 🎥 App Demo
 
-> A complete application walkthrough/demo will be added here.
-
-The demo showcases:
-
-Splash
-→ Onboarding
-→ Authentication
-→ User Preference Selection
-→ Personalized News Feed
-→ Infinite Scrolling
-→ Search
-→ Article Details
-→ Bookmarking
-→ Profile Management
-
-
----
 
 # 👨‍💻 Developer
 
