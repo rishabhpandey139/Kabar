@@ -430,22 +430,16 @@ Personalized Home Feed
 A visual walkthrough of the major features and user flows in **LimitlessNews**.
 
 ---
-
 ## 🚀 Splash & Onboarding
 
 <p align="center">
-  <a href="screenshots/Splash.jpeg">
-    <img src="screenshots/Splash.jpeg" width="220" alt="Splash Screen">
+  <a href="./screenshots/Splash.jpeg">
+    <img src="./screenshots/Splash.jpeg" width="220" alt="Splash Screen">
   </a>
-  <a href="screenshots/Onboarding_1.jpeg">
-    <img src="screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen">
-  </a>
-</p>
 
-<p align="center">
-  <b>Splash Screen</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Onboarding</b>
+  <a href="./screenshots/Onboarding_1.jpeg">
+    <img src="./screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen">
+  </a>
 </p>
 
 ---
@@ -453,26 +447,17 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔐 Authentication
 
 <p align="center">
-  <a href="screenshots/SignIn.jpeg">
-    <img src="screenshots/SignIn.jpeg" width="200" alt="Sign In Screen">
-  </a>.
-  
-  
-  
-  <a href="screenshots/SignUp.jpeg">
-    <img src="screenshots/SignUp.jpeg" width="200" alt="Sign Up Screen">
+  <a href="./screenshots/SignIn.jpeg">
+    <img src="./screenshots/SignIn.jpeg" width="200" alt="Sign In Screen">
   </a>
-  <a href="screenshots/ForgotScreen.jpeg">
-    <img src="screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen">
-  </a>
-</p>
 
-<p align="center">
-  <b>Sign In</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Sign Up</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Forgot Password</b>
+  <a href="./screenshots/SignUp.jpeg">
+    <img src="./screenshots/SignUp.jpeg" width="200" alt="Sign Up Screen">
+  </a>
+
+  <a href="./screenshots/ForgotScreen.jpeg">
+    <img src="./screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen">
+  </a>
 </p>
 
 ---
@@ -480,23 +465,17 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🎯 Personalize Your News
 
 <p align="center">
-  <a href="screenshots/Topics.jpeg">
-    <img src="screenshots/Topics.jpeg" width="200" alt="Topic Selection">
+  <a href="./screenshots/Topics.jpeg">
+    <img src="./screenshots/Topics.jpeg" width="200" alt="Topic Selection">
   </a>
-  <a href="screenshots/Country.jpeg">
-    <img src="screenshots/Country.jpeg" width="200" alt="Country Selection">
-  </a>
-  <a href="screenshots/Sources.jpeg">
-    <img src="screenshots/Sources.jpeg" width="200" alt="Source Selection">
-  </a>
-</p>
 
-<p align="center">
-  <b>Topic Selection</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Country Selection</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Source Selection</b>
+  <a href="./screenshots/Country.jpeg">
+    <img src="./screenshots/Country.jpeg" width="200" alt="Country Selection">
+  </a>
+
+  <a href="./screenshots/Sources.jpeg">
+    <img src="./screenshots/Sources.jpeg" width="200" alt="Source Selection">
+  </a>
 </p>
 
 ---
@@ -504,18 +483,13 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 📰 Personalized News Experience
 
 <p align="center">
-  <a href="screenshots/HomeFeed.jpeg">
-    <img src="screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed">
+  <a href="./screenshots/HomeFeed.jpeg">
+    <img src="./screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed">
   </a>
-  <a href="screenshots/Detail_Screen.jpeg">
-    <img src="screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen">
-  </a>
-</p>
 
-<p align="center">
-  <b>Personalized Home Feed</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Article Details</b>
+  <a href="./screenshots/Detail_Screen.jpeg">
+    <img src="./screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen">
+  </a>
 </p>
 
 ---
@@ -523,13 +497,9 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔖 Bookmarks
 
 <p align="center">
-  <a href="screenshots/BookmarkScreen.jpeg">
-    <img src="screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen">
+  <a href="./screenshots/BookmarkScreen.jpeg">
+    <img src="./screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen">
   </a>
-</p>
-
-<p align="center">
-  <b>Saved Bookmarks</b>
 </p>
 
 ---
@@ -537,23 +507,17 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 👤 Profile Management
 
 <p align="center">
-  <a href="screenshots/FillProfile.jpeg">
-    <img src="screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen">
+  <a href="./screenshots/FillProfile.jpeg">
+    <img src="./screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen">
   </a>
-  <a href="screenshots/ProfileDrawer.jpeg">
-    <img src="screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer">
-  </a>
-  <a href="screenshots/EditProfile.jpeg">
-    <img src="screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen">
-  </a>
-</p>
 
-<p align="center">
-  <b>Fill Profile</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Profile Drawer</b>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Edit Profile</b>
+  <a href="./screenshots/ProfileDrawer.jpeg">
+    <img src="./screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer">
+  </a>
+
+  <a href="./screenshots/EditProfile.jpeg">
+    <img src="./screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen">
+  </a>
 </p>
 
 ---
@@ -561,14 +525,12 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🚪 Logout
 
 <p align="center">
-  <a href="screenshots/Logout.jpeg">
-    <img src="screenshots/Logout.jpeg" width="220" alt="Logout Screen">
+  <a href="./screenshots/Logout.jpeg">
+    <img src="./screenshots/Logout.jpeg" width="220" alt="Logout Screen">
   </a>
 </p>
 
-<p align="center">
-  <b>Logout</b>
-</p>
+
 
 ---
 
