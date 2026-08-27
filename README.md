@@ -425,7 +425,6 @@ Personalized Home Feed
           └── Logout
 
 ---
-
 # 📱 App Screenshots
 
 A visual walkthrough of the major features and user flows in **LimitlessNews**.
@@ -435,8 +434,12 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🚀 Splash & Onboarding
 
 <p align="center">
-  <img src="./screenshots/Splash.jpeg" width="220" alt="Splash Screen"/>
-  <img src="./screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen"/>
+  <a href="screenshots/Splash.jpeg">
+    <img src="screenshots/Splash.jpeg" width="220" alt="Splash Screen">
+  </a>
+  <a href="screenshots/Onboarding_1.jpeg">
+    <img src="screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen">
+  </a>
 </p>
 
 <p align="center">
@@ -450,9 +453,18 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔐 Authentication
 
 <p align="center">
-  <img src="./screenshots/SignIn.jpeg" width="200" alt="Sign In Screen"/>
-  <img src="./screenshots/SingnUp.jpeg" width="200" alt="Sign Up Screen"/>
-  <img src="./screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen"/>
+  <a href="screenshots/SignIn.jpeg">
+    <img src="screenshots/SignIn.jpeg" width="200" alt="Sign In Screen">
+  </a>.
+  
+  
+  
+  <a href="screenshots/SignUp.jpeg">
+    <img src="screenshots/SignUp.jpeg" width="200" alt="Sign Up Screen">
+  </a>
+  <a href="screenshots/ForgotScreen.jpeg">
+    <img src="screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen">
+  </a>
 </p>
 
 <p align="center">
@@ -468,9 +480,15 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🎯 Personalize Your News
 
 <p align="center">
-  <img src="./screenshots/Topics.jpeg" width="200" alt="Topic Selection"/>
-  <img src="./screenshots/Country.jpeg" width="200" alt="Country Selection"/>
-  <img src="./screenshots/Sources.jpeg" width="200" alt="Source Selection"/>
+  <a href="screenshots/Topics.jpeg">
+    <img src="screenshots/Topics.jpeg" width="200" alt="Topic Selection">
+  </a>
+  <a href="screenshots/Country.jpeg">
+    <img src="screenshots/Country.jpeg" width="200" alt="Country Selection">
+  </a>
+  <a href="screenshots/Sources.jpeg">
+    <img src="screenshots/Sources.jpeg" width="200" alt="Source Selection">
+  </a>
 </p>
 
 <p align="center">
@@ -486,8 +504,12 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 📰 Personalized News Experience
 
 <p align="center">
-  <img src="./screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed"/>
-  <img src="./screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen"/>
+  <a href="screenshots/HomeFeed.jpeg">
+    <img src="screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed">
+  </a>
+  <a href="screenshots/Detail_Screen.jpeg">
+    <img src="screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen">
+  </a>
 </p>
 
 <p align="center">
@@ -501,7 +523,9 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔖 Bookmarks
 
 <p align="center">
-  <img src="./screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen"/>
+  <a href="screenshots/BookmarkScreen.jpeg">
+    <img src="screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen">
+  </a>
 </p>
 
 <p align="center">
@@ -513,9 +537,15 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 👤 Profile Management
 
 <p align="center">
-  <img src="./screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen"/>
-  <img src="./screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer"/>
-  <img src="./screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen"/>
+  <a href="screenshots/FillProfile.jpeg">
+    <img src="screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen">
+  </a>
+  <a href="screenshots/ProfileDrawer.jpeg">
+    <img src="screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer">
+  </a>
+  <a href="screenshots/EditProfile.jpeg">
+    <img src="screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen">
+  </a>
 </p>
 
 <p align="center">
@@ -527,62 +557,70 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 </p>
 
 ---
-## 🎥 App Demo
-
-A complete walkthrough of **LimitlessNews(Kabar)**, showcasing the main features, architecture, and user experience.
-
-<p align="center">
-  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
-    <img
-      src="https://img.youtube.com/vi/HrLp7nKVYEc/maxresdefault.jpg"
-      width="700"
-      alt="LimitlessNews App Demo"
-    />
-  </a>
-</p>
-
-<p align="center">
-  ▶️ <b>Click the preview above to watch the complete LimitlessNews(kabar) app demo</b>
-</p>
-
-### 🚀 Demo Highlights
-Splash
-   ↓
-Onboarding
-   ↓
-Authentication
-   ↓
-Topic Selection
-   ↓
-Country Selection
-   ↓
-News Source Selection
-   ↓
-Personalized Home Feed
-   ↓
-Infinite Scrolling with Paging 3
-   ↓
-Search News
-   ↓
-Article Details
-   ↓
-Bookmark Articles
-   ↓
-Profile & Edit Profile
-   ↓
-Logout
 
 ## 🚪 Logout
 
 <p align="center">
-  <img src="./screenshots/Logout.jpeg" width="220" alt="Logout Screen"/>
+  <a href="screenshots/Logout.jpeg">
+    <img src="screenshots/Logout.jpeg" width="220" alt="Logout Screen">
+  </a>
 </p>
 
 <p align="center">
   <b>Logout</b>
 </p>
 
+---
 
+# 🎥 App Demo
+
+A complete walkthrough of **LimitlessNews (Kabar)**, showcasing the main features and user experience.
+
+<p align="center">
+  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
+    <img
+      src="https://img.youtube.com/vi/HrLp7nKVYEc/maxresdefault.jpg"
+      width="700"
+      alt="LimitlessNews App Demo">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
+    ▶️ <b>Click here to watch the complete LimitlessNews (Kabar) App Demo</b>
+  </a>
+</p>
+
+---
+
+## 🚀 Demo Highlights
+
+Splash  
+↓  
+Onboarding  
+↓  
+Authentication  
+↓  
+Topic Selection  
+↓  
+Country Selection  
+↓  
+News Source Selection  
+↓  
+Personalized Home Feed  
+↓  
+Infinite Scrolling with Paging 3  
+↓  
+Search News  
+↓  
+Article Details  
+↓  
+Bookmark Articles  
+↓  
+Profile & Edit Profile  
+↓  
+Logout
+---
 
 # 👨‍💻 Developer
 
