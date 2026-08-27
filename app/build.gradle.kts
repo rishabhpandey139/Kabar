@@ -117,5 +117,6 @@ dependencies {
 //okhttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.json:json:20250517")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }
