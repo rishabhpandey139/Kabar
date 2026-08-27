@@ -542,7 +542,7 @@ A complete walkthrough of **LimitlessNews(Kabar)**, showcasing the main features
 </p>
 
 <p align="center">
-  <b>▶️ Click the preview above to watch the complete LimitlessNews(kabar) app demo</b>
+  ▶️ <b>Click the preview above to watch the complete LimitlessNews(kabar) app demo</b>
 </p>
 
 ### 🚀 Demo Highlights
