@@ -214,55 +214,59 @@ This project uses **NewsAPI** to fetch news articles based on:
 - Search queries
 
 ---
+## 📂 Project Structure
 
-# 📂 Project Structure
-
-LimitlessNews
+```text
+LimitlessNews/
 │
-├── app
-│   │
-│   └── src/main/java/com/example/limitlesstech/limitlessnews
+├── app/
+│   └── src/main/java/com/example/limitlesstech/limitlessnews/
 │
-│       ├── core
-│       │   ├── network
-│       │   ├── cloudinary
-│       │   └── util
+│       ├── core/
+│       │   ├── network/
+│       │   ├── cloudinary/
+│       │   └── util/
 │       │
-│       ├── data
-│       │   ├── local
-│       │   │   ├── datastore
-│       │   │   └── room
-│       │   │
-│       │   ├── remote
-│       │   │   ├── api
-│       │   │   └── dto
-│       │   │
-│       │   ├── paging
-│       │   ├── repositoryImpl
-│       │   ├── mapper
-│       │   └── error
+│       ├── data/
+│       │   ├── error/
+│       │   ├── local/
+│       │   │   ├── datastore/
+│       │   │   └── room/
+│       │   ├── remote/
+│       │   │   ├── api/
+│       │   │   └── dto/
+│       │   ├── paging/
+│       │   ├── repositoryImpl/
+│       │   └── mapper/
 │       │
-│       ├── domain
-│       │   ├── model
-│       │   ├── repository
-│       │   ├── usecase
-│       │   └── util
+│       ├── domain/
+│       │   ├── model/
+│       │   ├── repository/
+│       │   ├── usecase/
+│       │   └── util/
 │       │
-│       └── presentation
-│           ├── splash
-│           ├── onboarding
-│           ├── authscreen
-│           │   ├── login
-│           │   ├── signup
-│           │   └── forgot
-│           │
-│           ├── userSelectionScreens
-│           ├── home
-│           ├── search
-│           ├── detailScreen
-│           ├── bookmark
-│           ├── profile
-│           └── navigation
+│       └── presentation/
+│           ├── splash/
+│           ├── onboarding/
+│           ├── authscreen/
+│           │   ├── login/
+│           │   ├── signup/
+│           │   └── forgot/
+│           ├── userSelectionScreens/
+│           ├── home/
+│           ├── search/
+│           ├── detailScreen/
+│           ├── bookmark/
+│           ├── profile/
+│           └── navigation/
+│
+├── screenshots/
+├── gradle/
+├── README.md
+├── build.gradle.kts
+├── settings.gradle.kts
+└── gradle.properties
+```
 
 
 ---
