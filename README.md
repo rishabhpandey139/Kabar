@@ -344,7 +344,7 @@ Make sure you have:
 ## Clone The Repository
 
 git clone https://github.com/rishabhpandey139/LimitlessNews.git
-```
+
 
 Open the project in Android Studio and allow Gradle to sync.
 
