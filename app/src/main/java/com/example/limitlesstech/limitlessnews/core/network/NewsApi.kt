@@ -1,6 +1,7 @@
 package com.example.limitlesstech.limitlessnews.core.network
 
 import com.example.limitlesstech.limitlessnews.data.remote.dto.NewsDto
+import com.example.limitlesstech.limitlessnews.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,8 +24,7 @@ class NewsApi @Inject constructor(
     ): NewsDto {
 
         return client.get("top-headlines") {
-
-            parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
+            parameter("apikey", BuildConfig.NEWS_API_KEY)
 
             // Only one article is required
             parameter("page", 1)
@@ -61,8 +61,7 @@ class NewsApi @Inject constructor(
 
         return client.get("everything") {
 
-            parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
-
+            parameter("apikey", BuildConfig.NEWS_API_KEY)
             parameter("page", page)
             parameter("pageSize", pageSize)
 
@@ -111,7 +110,7 @@ class NewsApi @Inject constructor(
 
         return client.get("everything") {
 
-            parameter("apikey", "c41c23cd12b043d095bb3f9ae5335960")
+            parameter("apikey", BuildConfig.NEWS_API_KEY)
 
             parameter("q", query)
 

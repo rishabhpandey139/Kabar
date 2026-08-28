@@ -19,6 +19,7 @@ import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.example.limitlesstech.limitlessnews.BuildConfig
 
 @Singleton
 class CloudinaryUploader @Inject constructor(
@@ -30,12 +31,13 @@ class CloudinaryUploader @Inject constructor(
 
         private const val TAG = "CloudinaryUploader"
 
-        private const val CLOUD_NAME = "sfjhuzep"
+        private val CLOUD_NAME =
+            BuildConfig.CLOUDINARY_CLOUD_NAME
 
-        private const val UPLOAD_PRESET =
-            "LimitlessNews_User_Profile_Img"
+        private val UPLOAD_PRESET =
+            BuildConfig.CLOUDINARY_UPLOAD_PRESET
 
-        private const val BASE_URL =
+        private val BASE_URL =
             "https://api.cloudinary.com/v1_1/$CLOUD_NAME/image/upload"
     }
 
