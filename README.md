@@ -84,42 +84,51 @@ The project focuses on building a scalable Android architecture with clear separ
 
 # 🏗️ Architecture
 
-LimitlessNews(Kabar) follows:
+LimitlessNews (Kabar) follows:
 
 > **Clean Architecture + MVVM + Repository Pattern + Use Cases**
-┌─────────────────────────────────────┐
-│         Presentation Layer          │
-│                                     │
-│  Jetpack Compose                    │
-│  Screens                            │
-│  ViewModels                         │
-│  UiState                            │
-│  Events                             │
-└──────────────────┬──────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────┐
-│            Domain Layer             │
-│                                     │
-│  Models                             │
-│  Repository Contracts               │
-│  Use Cases                          │
-│  Result & Domain Errors             │
-└──────────────────┬──────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────┐
-│             Data Layer              │
-│                                     │
-│  Repository Implementations         │
-│  News API                           │
-│  Room Database                      │
-│  DataStore                          │
-│  Firebase                           │
-│  Firestore                          │
-│  Paging                             │
-└─────────────────────────────────────┘
 
+```text
+┌─────────────────────────────────────────────┐
+│           PRESENTATION LAYER                │
+├─────────────────────────────────────────────┤
+│  • Jetpack Compose                          │
+│  • Screens                                  │
+│  • ViewModels                               │
+│  • UiState                                  │
+│  • UI Events                                │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│              DOMAIN LAYER                   │
+├─────────────────────────────────────────────┤
+│  • Domain Models                            │
+│  • Repository Contracts                     │
+│  • Use Cases                                │
+│  • Result & Domain Errors                   │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│               DATA LAYER                    │
+├─────────────────────────────────────────────┤
+│  • Repository Implementations               │
+│  • Remote Data Sources                      │
+│  • Local Data Sources                       │
+│  • Paging                                   │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+     News API         Room         Firebase
+                        │
+                        ▼
+                    DataStore
+
+                  Cloudinary
+---
 
 ## 🔄 Data Flow
 
