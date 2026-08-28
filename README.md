@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📰 LimitlessNews(Kabar)
+# 📰LimitlessNews(Kabar)
 
 ### A modern Android news application built with Kotlin, Jetpack Compose, Clean Architecture & MVVM
 
@@ -12,7 +12,7 @@ Explore personalized news, search articles, bookmark content locally, manage pre
 
 ## 📱 About The Project
 
-**LimitlessNews** is a modern Android news application designed using **Clean Architecture**, **MVVM**, and the **Repository Pattern**.
+**LimitlessNews(Kabar)** is a modern Android news application designed using **Clean Architecture**, **MVVM**, and the **Repository Pattern**.
 
 The application allows users to personalize their news experience by selecting topics, countries, and news sources. Users can browse news using infinite scrolling, search articles, save bookmarks locally, manage preferences, authenticate securely, and maintain their profile.
 
@@ -84,7 +84,7 @@ The project focuses on building a scalable Android architecture with clear separ
 
 # 🏗️ Architecture
 
-LimitlessNews follows:
+LimitlessNews(Kabar) follows:
 
 > **Clean Architecture + MVVM + Repository Pattern + Use Cases**
 ┌─────────────────────────────────────┐
@@ -427,19 +427,15 @@ Personalized Home Feed
 ---
 # 📱 App Screenshots
 
-A visual walkthrough of the major features and user flows in **LimitlessNews**.
+A visual walkthrough of the major features and user flows in **LimitlessNews(Kabar)**.
 
 ---
+
 ## 🚀 Splash & Onboarding
 
 <p align="center">
-  <a href="./screenshots/Splash.jpeg">
-    <img src="./screenshots/Splash.jpeg" width="220" alt="Splash Screen">
-  </a>
-
-  <a href="./screenshots/Onboarding_1.jpeg">
-    <img src="./screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen">
-  </a>
+  <img src="screenshots/Splash.jpeg" width="220" alt="Splash Screen"/>
+  <img src="screenshots/Onboarding_1.jpeg" width="220" alt="Onboarding Screen"/>
 </p>
 
 ---
@@ -447,17 +443,9 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔐 Authentication
 
 <p align="center">
-  <a href="./screenshots/SignIn.jpeg">
-    <img src="./screenshots/SignIn.jpeg" width="200" alt="Sign In Screen">
-  </a>
-
-  <a href="./screenshots/SignUp.jpeg">
-    <img src="./screenshots/SignUp.jpeg" width="200" alt="Sign Up Screen">
-  </a>
-
-  <a href="./screenshots/ForgotScreen.jpeg">
-    <img src="./screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen">
-  </a>
+  <img src="screenshots/SignIn.jpeg" width="200" alt="Sign In Screen"/>
+  <img src="screenshots/SignUp.jpeg" width="200" alt="Sign Up Screen"/>
+  <img src="screenshots/ForgotScreen.jpeg" width="200" alt="Forgot Password Screen"/>
 </p>
 
 ---
@@ -465,17 +453,9 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🎯 Personalize Your News
 
 <p align="center">
-  <a href="./screenshots/Topics.jpeg">
-    <img src="./screenshots/Topics.jpeg" width="200" alt="Topic Selection">
-  </a>
-
-  <a href="./screenshots/Country.jpeg">
-    <img src="./screenshots/Country.jpeg" width="200" alt="Country Selection">
-  </a>
-
-  <a href="./screenshots/Sources.jpeg">
-    <img src="./screenshots/Sources.jpeg" width="200" alt="Source Selection">
-  </a>
+  <img src="screenshots/Topics.jpeg" width="200" alt="Topic Selection"/>
+  <img src="screenshots/Country.jpeg" width="200" alt="Country Selection"/>
+  <img src="screenshots/Sources.jpeg" width="200" alt="Source Selection"/>
 </p>
 
 ---
@@ -483,13 +463,8 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 📰 Personalized News Experience
 
 <p align="center">
-  <a href="./screenshots/HomeFeed.jpeg">
-    <img src="./screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed">
-  </a>
-
-  <a href="./screenshots/Detail_Screen.jpeg">
-    <img src="./screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen">
-  </a>
+  <img src="screenshots/HomeFeed.jpeg" width="220" alt="Personalized Home Feed"/>
+  <img src="screenshots/Detail_Screen.jpeg" width="220" alt="Article Detail Screen"/>
 </p>
 
 ---
@@ -497,9 +472,7 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🔖 Bookmarks
 
 <p align="center">
-  <a href="./screenshots/BookmarkScreen.jpeg">
-    <img src="./screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen">
-  </a>
+  <img src="screenshots/BookmarkScreen.jpeg" width="220" alt="Bookmarks Screen"/>
 </p>
 
 ---
@@ -507,17 +480,9 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 👤 Profile Management
 
 <p align="center">
-  <a href="./screenshots/FillProfile.jpeg">
-    <img src="./screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen">
-  </a>
-
-  <a href="./screenshots/ProfileDrawer.jpeg">
-    <img src="./screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer">
-  </a>
-
-  <a href="./screenshots/EditProfile.jpeg">
-    <img src="./screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen">
-  </a>
+  <img src="screenshots/FillProfile.jpeg" width="200" alt="Fill Profile Screen"/>
+  <img src="screenshots/ProfileDrawer.jpeg" width="200" alt="Profile Drawer"/>
+  <img src="screenshots/EditProfile.jpeg" width="200" alt="Edit Profile Screen"/>
 </p>
 
 ---
@@ -525,33 +490,74 @@ A visual walkthrough of the major features and user flows in **LimitlessNews**.
 ## 🚪 Logout
 
 <p align="center">
-  <a href="./screenshots/Logout.jpeg">
-    <img src="./screenshots/Logout.jpeg" width="220" alt="Logout Screen">
-  </a>
+  <img src="screenshots/Logout.jpeg" width="220" alt="Logout Screen"/>
 </p>
-
-
-
+---
 ---
 
 # 🎥 App Demo
 
-A complete walkthrough of **LimitlessNews (Kabar)**, showcasing the main features and user experience.
+A complete walkthrough of **LimitlessNews(Kabar)**, showcasing the main features and user experience.
 
 <p align="center">
-  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
-    <img
-      src="https://img.youtube.com/vi/HrLp7nKVYEc/maxresdefault.jpg"
+  <a href="https://drive.google.com/file/d/1UHQSm8RC11c_Qi9neKAfVFshevzorI5U/view?usp=sharing">
+    <img 
+      src="screenshots/HomeFeed.jpeg"
       width="700"
-      alt="LimitlessNews App Demo">
+      alt="▶ Click to watch the Kabar App Demo"
+    />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://youtu.be/HrLp7nKVYEc?si=tWK1leaS5lE1W9H_">
-    ▶️ <b>Click here to watch the complete LimitlessNews (Kabar) App Demo</b>
+  <a href="https://drive.google.com/file/d/1UHQSm8RC11c_Qi9neKAfVFshevzorI5U/view?usp=sharing">
+    ▶️ <b>Click here to watch the complete LimitlessNews(Kabar) App Demo</b>
   </a>
 </p>
+
+---
+
+## 🚀 Demo Highlights
+
+Splash  
+↓  
+
+Onboarding  
+↓  
+
+Authentication  
+↓  
+
+Topic Selection  
+↓  
+
+Country Selection  
+↓  
+
+News Source Selection  
+↓  
+
+Personalized Home Feed  
+↓  
+
+Infinite Scrolling with Paging 3  
+↓  
+
+Search News  
+↓  
+
+Article Details  
+↓  
+
+Bookmark Articles  
+↓  
+
+Profile & Edit Profile  
+↓  
+
+Logout
+
+
 
 ---
 
